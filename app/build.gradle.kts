@@ -43,7 +43,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "unibo.cineradar.CineRadar"
+    mainClass = "unibo.footstats.AppLauncher"
 }
 
 tasks.named<Test>("test") {
