@@ -3,9 +3,9 @@
 -- *--------------------------------------------
 -- * DB-MAIN version: 11.0.2              
 -- * Generator date: Sep 14 2021              
--- * Generation date: Sun Aug 11 20:13:40 2024 
+-- * Generation date: Sun Aug 11 20:26:10 2024 
 -- * LUN file: C:\Users\Luca\Desktop\FootballStats\FootStats.lun 
--- * Schema: FootStats/SQL 
+-- * Schema: FootStats/SQL1 
 -- ********************************************* 
 
 
