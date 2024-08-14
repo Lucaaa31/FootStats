@@ -20,12 +20,9 @@ repositories {
 }
 
 dependencies {
+    implementation("mysql:mysql-connector-java:8.0.29")
     // Use JUnit Jupiter for testing.
-    testImplementation(libs.junit.jupiter)
-    testImplementation("org.mockito:mockito-core:5.11.0")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation("commons-codec:commons-codec:1.16.1")
-    implementation("org.mariadb.jdbc:mariadb-java-client:3.3.3")
     implementation("org.slf4j:slf4j-simple:2.0.13")
     //View
     //https://mvnrepository.com/artifact/com.github.lgooddatepicker/LGoodDatePicker
@@ -43,7 +40,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "unibo.footstats.AppLauncher"
+    mainClass = "unibo.footstats.application.AppLauncher"
 }
 
 tasks.named<Test>("test") {

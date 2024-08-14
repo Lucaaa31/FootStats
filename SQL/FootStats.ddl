@@ -3,17 +3,17 @@
 -- *--------------------------------------------
 -- * DB-MAIN version: 11.0.2              
 -- * Generator date: Sep 14 2021              
--- * Generation date: Sun Aug 11 20:13:40 2024 
--- * LUN file: C:\Users\Luca\Desktop\FootballStats\FootStats.lun 
+-- * Generation date: Mon Aug 12 11:17:02 2024 
+-- * LUN file: C:\Users\Luca\Desktop\FootStats\docs\ER\FootStats.lun 
 -- * Schema: FootStats/SQL 
 -- ********************************************* 
 
 
 -- Database Section
 -- ________________ 
-
+drop database if exists FootStats;
 create database FootStats;
-
+use FootStats;
 
 -- DBSpace Section
 -- _______________
@@ -26,16 +26,19 @@ create table ACCOUNT (
      Nome varchar(64) not null,
      Cognome varchar(64) not null,
      Username varchar(64) not null,
-     Email varchar(64) not null,
      Password varchar(256) not null,
      constraint ID_ACCOUNT_ID primary key (Username));
+
+create table AMMINISTRATORE (
+     Username varchar(64) not null,
+     constraint ID_AMMIN_ACCOU_ID primary key (Username));
 
 create table CALCIATORE (
      Nome varchar(64) not null,
      Cognome varchar(64) not null,
      CF char(32) not null,
      Data_di_nascita date not null,
-     Altezza float(64) not null,
+     Altezza numeric(64) not null,
      Luogo_di_nascita varchar(64) not null,
      Piede_preferito varchar(64) not null,
      constraint ID_CALCIATORE_ID primary key (CF));
@@ -53,24 +56,25 @@ create table CONTRATTO (
      Valore numeric(64) not null,
      constraint ID_CONTRATTO_ID primary key (CF_Calciatore, DataFirma));
 
-create table AMMINISTRATORE (
-     UsernameAmministratore varchar(64) not null,
-     constraint ID_AMMIN_ACCOU_ID primary key (UsernameAmministratore));
-
 create table GOL (
      AnnoCalcistico varchar(64) not null,
      TipoCompetizione varchar(64) not null,
      CodiceCompetizione varchar(128) not null,
-     CodicePartita numeric(32) not null,
+     CodicePartita int not null,
      Marcatore varchar(64) not null,
      Minuto numeric(32) not null,
      Assistman varchar(64) not null,
      constraint ID_GOL_ID primary key (AnnoCalcistico, TipoCompetizione, CodiceCompetizione, CodicePartita, Marcatore, Minuto, Assistman));
 
+create table PALMARES_SQUAD (
+     NomeSquadra varchar(64) not null,
+     NomeTrofeo varchar(64) not null,
+     constraint ID_PALMARES_SQUAD_ID primary key (NomeSquadra, NomeTrofeo));
+
 create table PALMARES_STAGIONE_GIOCATORE (
      AnnoCalcistico varchar(64) not null,
      CF_Calciatore char(32) not null,
-     CodiceStatsStagionale numeric(64) not null,
+     CodiceStatsStagionale int not null,
      NomeTrofeo varchar(64) not null,
      constraint ID_PALMARES_STAGIONE_GIOCATORE_ID primary key (AnnoCalcistico, CF_Calciatore, CodiceStatsStagionale, NomeTrofeo));
 
@@ -86,7 +90,7 @@ create table PARTITA (
      AnnoCalcistico varchar(64) not null,
      TipoCompetizione varchar(64) not null,
      CodiceCompetizione varchar(128) not null,
-     CodicePartita -- Sequence attribute not implemented -- not null,
+     CodicePartita int not null,
      Data date not null,
      Stadio varchar(64) not null,
      Ora numeric(64) not null,
@@ -94,17 +98,12 @@ create table PARTITA (
      SquadraOspite varchar(64) not null,
      constraint ID_PARTITA_ID primary key (AnnoCalcistico, TipoCompetizione, CodiceCompetizione, CodicePartita));
 
-create table PALMARES_SQUAD (
-     NomeSquadra varchar(64) not null,
-     NomeTrofeo varchar(64) not null,
-     constraint ID_PALMARES_SQUAD_ID primary key (NomeSquadra, NomeTrofeo));
-
 create table RICHIESTE (
-     UsernameUtente varchar(64) not null,
-     CodiceRichiesta -- Sequence attribute not implemented -- not null,
+     Username varchar(64) not null,
+     CodiceRichiesta int not null,
      Tipologia varchar(64) not null,
      Descrizione varchar(500) not null,
-     constraint ID_RICHIESTE_ID primary key (UsernameUtente, CodiceRichiesta));
+     constraint ID_RICHIESTE_ID primary key (Username, CodiceRichiesta));
 
 create table SQUADRA (
      Nome varchar(64) not null,
@@ -118,29 +117,26 @@ create table STAGIONE (
      AnnoCalcistico varchar(64) not null,
      constraint ID_STAGIONE_ID primary key (AnnoCalcistico));
 
-create table STATS_GIOCATORE_PARTITA (
-     CF_Calciatore char(32) not null,
-     AnnoCalcistico varchar(64) not null,
-     TipoCompetizione varchar(64) not null,
-     CodiceCompetizione varchar(128) not null,
-     CodicePartita numeric(32) not null,
-     CodiceStatsPartita -- Sequence attribute not implemented -- not null,
-     Goal numeric(32) not null,
-     Assist numeric(32) not null,
-     Cartellini numeric(32) not null,
-     SOM_AnnoCalcistico varchar(64) not null,
-     SOM_CF_Calciatore char(32) not null,
-     SOM_CodiceStatsStagionale numeric(64) not null,
-     SOM_NomeTrofeo varchar(64) not null,
-     constraint ID_STATS_GIOCATORE_PARTITA_ID primary key (AnnoCalcistico, TipoCompetizione, CodiceCompetizione, CodicePartita, CF_Calciatore, CodiceStatsPartita));
+CREATE TABLE STATS_GIOCATORE_PARTITA (
+    CF_Calciatore CHAR(32) NOT NULL,
+    AnnoCalcistico VARCHAR(64) NOT NULL,
+    TipoCompetizione VARCHAR(64) NOT NULL,
+    CodiceCompetizione VARCHAR(128) NOT NULL,
+    CodicePartita INT NOT NULL,
+    CodiceStatsPartita INT NOT NULL,
+    Goal DECIMAL(10, 2) NOT NULL,  
+    Assist DECIMAL(10, 2) NOT NULL,  
+    Cartellini DECIMAL(10, 2) NOT NULL,  
+    PRIMARY KEY (AnnoCalcistico, TipoCompetizione, CodiceCompetizione, CodicePartita, CF_Calciatore, CodiceStatsPartita));
+
 
 create table STATS_GIOCATORE_STAGIONE (
      CF_Calciatore char(32) not null,
      AnnoCalcistico varchar(64) not null,
-     CodiceStatsStagionale -- Sequence attribute not implemented -- not null,
+     CodiceStatsStagionale int not null,
      Goal_stagionali numeric(32) not null,
      Assist_stagionali numeric(32) not null,
-     Valore_di_mercato numeric(1) not null,
+     Valore_di_mercato numeric(64) not null,
      Presenze numeric(64) not null,
      Numero_maglia numeric(32),
      Cartellini_stagionali numeric(32) not null,
@@ -166,113 +162,104 @@ create table Trofeo (
      constraint ID_Trofeo_ID primary key (NomeTrofeo));
 
 create table UTENTE (
-     UsernameUtente varchar(64) not null,
+     Username varchar(64) not null,
      Targhetta varchar(64),
-     constraint ID_UTENT_ACCOU_ID primary key (UsernameUtente));
+     constraint ID_UTENT_ACCOU_ID primary key (Username));
 
 
 -- Constraints Section
 -- ___________________ 
 
-alter table COMPETIZIONE add constraint ID_COMPETIZIONE_CHK
-     check(exists(select * from PARTITA
-                  where PARTITA.AnnoCalcistico = AnnoCalcistico and PARTITA.TipoCompetizione = TipoCompetizione and PARTITA.CodiceCompetizione = CodiceCompetizione)); 
+alter table AMMINISTRATORE
+    add constraint ID_AMMIN_ACCOU_FK foreign key (Username) references ACCOUNT(Username);
 
 alter table COMPETIZIONE add constraint REF_COMPE_STAGI
      foreign key (AnnoCalcistico)
-     references STAGIONE;
+     references STAGIONE(AnnoCalcistico);
 
 alter table COMPETIZIONE add constraint REF_COMPE_TIPO__FK
      foreign key (TipoCompetizione)
-     references TIPO_COMPETIZIONE;
+     references TIPO_COMPETIZIONE(Nome);
 
 alter table CONTRATTO add constraint REF_CONTR_CALCI
      foreign key (CF_Calciatore)
-     references CALCIATORE;
-
-alter table AMMINISTRATORE add constraint ID_AMMIN_ACCOU_FK
-     foreign key (UsernameAmministratore)
-     references ACCOUNT;
+     references CALCIATORE(CF);
 
 alter table GOL add constraint REF_GOL_PARTI
      foreign key (AnnoCalcistico, TipoCompetizione, CodiceCompetizione, CodicePartita)
-     references PARTITA;
+     references PARTITA(AnnoCalcistico, TipoCompetizione, CodiceCompetizione, CodicePartita);
 
-alter table PALMARES_STAGIONE_GIOCATORE add constraint REF_PALMA_Trofe_1_FK
+alter table PALMARES_SQUAD add constraint REF_PALMA_Trofe_1_FK
      foreign key (NomeTrofeo)
-     references Trofeo;
-
-alter table PALMARES_STAGIONE_GIOCATORE add constraint REF_PALMA_STATS
-     foreign key (AnnoCalcistico, CF_Calciatore, CodiceStatsStagionale)
-     references STATS_GIOCATORE_STAGIONE;
-
-alter table PARTECIPAZIONE add constraint REF_PARTE_COMPE_FK
-     foreign key (AnnoCalcistico, TipoCompetizione, CodiceCompetizione)
-     references COMPETIZIONE;
-
-alter table PARTECIPAZIONE add constraint REF_PARTE_SQUAD
-     foreign key (NomeSquadra)
-     references SQUADRA;
-
-alter table PARTITA add constraint REF_PARTI_SQUAD_1_FK
-     foreign key (SquadraCasa)
-     references SQUADRA;
-
-alter table PARTITA add constraint REF_PARTI_SQUAD_FK
-     foreign key (SquadraOspite)
-     references SQUADRA;
-
-alter table PARTITA add constraint EQU_PARTI_COMPE
-     foreign key (AnnoCalcistico, TipoCompetizione, CodiceCompetizione)
-     references COMPETIZIONE;
-
-alter table PALMARES_SQUAD add constraint REF_PALMA_Trofe_FK
-     foreign key (NomeTrofeo)
-     references Trofeo;
+     references Trofeo(NomeTrofeo);
 
 alter table PALMARES_SQUAD add constraint REF_PALMA_SQUAD
      foreign key (NomeSquadra)
-     references SQUADRA;
+     references SQUADRA(Nome);
+
+alter table PALMARES_STAGIONE_GIOCATORE add constraint REF_PALMA_Trofe_FK
+     foreign key (NomeTrofeo)
+     references Trofeo(NomeTrofeo);
+
+alter table PALMARES_STAGIONE_GIOCATORE add constraint REF_PALMA_STATS
+     foreign key (AnnoCalcistico, CF_Calciatore, CodiceStatsStagionale)
+     references STATS_GIOCATORE_STAGIONE(AnnoCalcistico, CF_Calciatore, CodiceStatsStagionale);
+
+alter table PARTECIPAZIONE add constraint REF_PARTE_COMPE_FK
+     foreign key (AnnoCalcistico, TipoCompetizione, CodiceCompetizione)
+     references COMPETIZIONE(AnnoCalcistico, TipoCompetizione, CodiceCompetizione);
+
+alter table PARTECIPAZIONE add constraint REF_PARTE_SQUAD
+     foreign key (NomeSquadra)
+     references SQUADRA(Nome);
+
+alter table PARTITA add constraint REF_PARTI_SQUAD_1_FK
+     foreign key (SquadraCasa)
+     references SQUADRA(Nome);
+
+alter table PARTITA add constraint REF_PARTI_SQUAD_FK
+     foreign key (SquadraOspite)
+     references SQUADRA(Nome);
+
+alter table PARTITA add constraint EQU_PARTI_COMPE
+     foreign key (AnnoCalcistico, TipoCompetizione, CodiceCompetizione)
+     references COMPETIZIONE(AnnoCalcistico, TipoCompetizione, CodiceCompetizione);
 
 alter table RICHIESTE add constraint REF_RICHI_UTENT
-     foreign key (UsernameUtente)
-     references UTENTE;
+     foreign key (Username)
+     references UTENTE(Username);
 
 alter table STATS_GIOCATORE_PARTITA add constraint REF_STATS_PARTI
      foreign key (AnnoCalcistico, TipoCompetizione, CodiceCompetizione, CodicePartita)
-     references PARTITA;
+     references PARTITA(AnnoCalcistico, TipoCompetizione, CodiceCompetizione, CodicePartita);
 
 alter table STATS_GIOCATORE_PARTITA add constraint REF_STATS_CALCI_1_FK
      foreign key (CF_Calciatore)
-     references CALCIATORE;
-
-alter table STATS_GIOCATORE_PARTITA add constraint REF_STATS_PALMA_FK
-     foreign key (SOM_AnnoCalcistico, SOM_CF_Calciatore, SOM_CodiceStatsStagionale, SOM_NomeTrofeo)
-     references PALMARES_STAGIONE_GIOCATORE;
+     references CALCIATORE(CF);
 
 alter table STATS_GIOCATORE_STAGIONE add constraint REF_STATS_STAGI
      foreign key (AnnoCalcistico)
-     references STAGIONE;
+     references STAGIONE(AnnoCalcistico);
 
 alter table STATS_GIOCATORE_STAGIONE add constraint REF_STATS_CALCI_FK
      foreign key (CF_Calciatore)
-     references CALCIATORE;
+     references CALCIATORE(CF);
 
 alter table STORICO_PARTECIPAZIONI add constraint REF_STORI_STAGI_FK
      foreign key (AnnoCalcistico)
-     references STAGIONE;
+     references STAGIONE(AnnoCalcistico);
 
 alter table STORICO_PARTECIPAZIONI add constraint REF_STORI_SQUAD_FK
      foreign key (NomeSquadra)
-     references SQUADRA;
+     references SQUADRA(Nome);
 
 alter table STORICO_PARTECIPAZIONI add constraint REF_STORI_CALCI
      foreign key (CF_Calciatore)
-     references CALCIATORE;
+     references CALCIATORE(CF);
 
 alter table UTENTE add constraint ID_UTENT_ACCOU_FK
-     foreign key (UsernameUtente)
-     references ACCOUNT;
+     foreign key (Username)
+     references ACCOUNT(Username);
 
 
 -- Index Section
@@ -280,6 +267,9 @@ alter table UTENTE add constraint ID_UTENT_ACCOU_FK
 
 create unique index ID_ACCOUNT_IND
      on ACCOUNT (Username);
+
+create unique index ID_AMMIN_ACCOU_IND
+     on AMMINISTRATORE (Username);
 
 create unique index ID_CALCIATORE_IND
      on CALCIATORE (CF);
@@ -293,16 +283,19 @@ create index REF_COMPE_TIPO__IND
 create unique index ID_CONTRATTO_IND
      on CONTRATTO (CF_Calciatore, DataFirma);
 
-create unique index ID_AMMIN_ACCOU_IND
-     on AMMINISTRATORE (UsernameAmministratore);
-
 create unique index ID_GOL_IND
      on GOL (AnnoCalcistico, TipoCompetizione, CodiceCompetizione, CodicePartita, Marcatore, Minuto, Assistman);
+
+create unique index ID_PALMARES_SQUAD_IND
+     on PALMARES_SQUAD (NomeSquadra, NomeTrofeo);
+
+create index REF_PALMA_Trofe_1_IND
+     on PALMARES_SQUAD (NomeTrofeo);
 
 create unique index ID_PALMARES_STAGIONE_GIOCATORE_IND
      on PALMARES_STAGIONE_GIOCATORE (AnnoCalcistico, CF_Calciatore, CodiceStatsStagionale, NomeTrofeo);
 
-create index REF_PALMA_Trofe_1_IND
+create index REF_PALMA_Trofe_IND
      on PALMARES_STAGIONE_GIOCATORE (NomeTrofeo);
 
 create unique index ID_PARTECIPAZIONE_IND
@@ -320,14 +313,8 @@ create index REF_PARTI_SQUAD_1_IND
 create index REF_PARTI_SQUAD_IND
      on PARTITA (SquadraOspite);
 
-create unique index ID_PALMARES_SQUAD_IND
-     on PALMARES_SQUAD (NomeSquadra, NomeTrofeo);
-
-create index REF_PALMA_Trofe_IND
-     on PALMARES_SQUAD (NomeTrofeo);
-
 create unique index ID_RICHIESTE_IND
-     on RICHIESTE (UsernameUtente, CodiceRichiesta);
+     on RICHIESTE (Username, CodiceRichiesta);
 
 create unique index ID_SQUADRA_IND
      on SQUADRA (Nome);
@@ -340,9 +327,6 @@ create unique index ID_STATS_GIOCATORE_PARTITA_IND
 
 create index REF_STATS_CALCI_1_IND
      on STATS_GIOCATORE_PARTITA (CF_Calciatore);
-
-create index REF_STATS_PALMA_IND
-     on STATS_GIOCATORE_PARTITA (SOM_AnnoCalcistico, SOM_CF_Calciatore, SOM_CodiceStatsStagionale, SOM_NomeTrofeo);
 
 create unique index ID_STATS_GIOCATORE_STAGIONE_IND
      on STATS_GIOCATORE_STAGIONE (AnnoCalcistico, CF_Calciatore, CodiceStatsStagionale);
@@ -366,5 +350,5 @@ create unique index ID_Trofeo_IND
      on Trofeo (NomeTrofeo);
 
 create unique index ID_UTENT_ACCOU_IND
-     on UTENTE (UsernameUtente);
+     on UTENTE (Username);
 
