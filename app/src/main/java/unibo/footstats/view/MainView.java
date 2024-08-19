@@ -1,16 +1,20 @@
 package unibo.footstats.view;
 
 import unibo.footstats.controller.Controller;
+import unibo.footstats.utility.AccountType;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class MainView extends JFrame {
     private CardLayout cardLayout = new CardLayout();
     private Controller controller = new Controller();
 
     private SignInView signInView = new SignInView(controller);
-    private HomePage homePageView = new HomePage();
+    private HomePage homePageView = new HomePage(controller);
+    private LogInView logInView = new LogInView(controller);
 
 
     public MainView() {
@@ -21,55 +25,51 @@ public class MainView extends JFrame {
 
         setLayout(cardLayout);
 
-        final LogInView logInView = new LogInView(controller, e -> {
-            try {
-                System.out.println(this.getContentPane());
-                cardLayout.show(this.getContentPane(), "homePage");
-                this.revalidate();
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Invalid username or password", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-
-        cardLayout.addLayoutComponent(logInView, "login");
-        cardLayout.addLayoutComponent(signInView, "signin");
+        cardLayout.addLayoutComponent(signInView, "signIn");
         cardLayout.addLayoutComponent(homePageView, "homePage");
+        cardLayout.addLayoutComponent(logInView, "logIn");
+
 
         JMenuBar menuBar = new JMenuBar();
-        JMenu menu = new JMenu("Select an option");
-        JMenuItem loginAsAdmin = new JMenuItem("Login as Admin");
-        JMenuItem loginAsUser = new JMenuItem("Login as User");
-        JMenuItem signInUser = new JMenuItem("Sign In as User");
+        JMenu menu = new JMenu("Log In");
+        JMenuItem logIn = new JMenuItem("Log In");
+        JMenuItem signIn = new JMenuItem("Sign In");
 
-        menu.add(loginAsAdmin);
-        menu.add(loginAsUser);
-        menu.add(signInUser);
+        menu.add(logIn);
+        menu.add(signIn);
         menuBar.add(menu);
         setJMenuBar(menuBar);
 
         this.add(logInView);
         this.add(signInView);
+        this.add(homePageView);
 
-        loginAsAdmin.addActionListener(e -> {
-            logInView.setSelectedRole("admin");
-            menu.setText("Login as Admin");
-            cardLayout.show(this.getContentPane(), "login");
+
+        logIn.addActionListener(e -> {
+            cardLayout.show(this.getContentPane(), "logIn");
+            menu.setText("Log In");
             this.revalidate();
         });
 
-        loginAsUser.addActionListener(e -> {
-            cardLayout.show(this.getContentPane(), "login");
-            logInView.setSelectedRole("user");
-            menu.setText("Login as User");
+        signIn.addActionListener(e -> {
+            cardLayout.show(this.getContentPane(), "signIn");
+            menu.setText("Sign In");
             this.revalidate();
         });
 
-        signInUser.addActionListener(e -> {
-            cardLayout.show(this.getContentPane(), "signin");
-            menu.setText("Sign In as User");
-            this.revalidate();
+        logInView.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                menu.setVisible(false);
+                if (controller.getLoggedAccount() != null) {
+                    cardLayout.show(MainView.this.getContentPane(), "homePage");
+                    MainView.this.setSize(800, 600);
+                    MainView.this.revalidate();
+                }
+            }
         });
+
+
 
         logInView.setVisible(false);
         signInView.setVisible(false);

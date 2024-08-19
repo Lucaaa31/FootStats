@@ -1,3 +1,4 @@
+-- Cancellazione di tutte le tabelle
 DELETE FROM PALMARES_STAGIONE_GIOCATORE;
 DELETE FROM PALMARES_SQUAD;
 DELETE FROM STORICO_PARTECIPAZIONI;
@@ -18,9 +19,9 @@ DELETE FROM UTENTE;
 DELETE FROM TROFEO;
 DELETE FROM ACCOUNT;
 
-
-
+-- Inserimento di nuovi dati
 INSERT INTO ACCOUNT (Nome, Cognome, Username, Password) VALUES
+('Luca', 'Camillini', 'a', '123'),
 ('Mario', 'Rossi', 'mario.rossi', 'password123'),
 ('Luigi', 'Bianchi', 'luigi.bianchi', 'securepass'),
 ('Giovanni', 'Verdi', 'giovanni.verdi', 'password456'),
@@ -97,9 +98,10 @@ INSERT INTO STORICO_PARTECIPAZIONI (CF_Calciatore, AnnoCalcistico, CodiceStorico
 ('CF003', '2023/2024', 'ST003', NULL);
 
 INSERT INTO UTENTE (Username, Targhetta) VALUES
+('a', NULL),
 ('luigi.bianchi', 'Attendibile'),
-('giovanni.verdi', 'Scammer'),
-('marco.violi',  NULL);
+('giovanni.verdi', 'Non Attendibile'),
+('marco.violi', NULL);
 
-INSERT INTO RICHIESTE (Username, CodiceRichiesta, Tipologia, Descrizione) VALUES
-('luigi.bianchi', 1, 'Modifica', 'Questa stagione il calciatore Francesco Totti ha segnato 10 gol e non 5');
+INSERT INTO RICHIESTE (Username, CodiceRichiesta, Tipologia, Stato, Descrizione) VALUES
+('luigi.bianchi', 1, 'Modifica', 'Non visionata', 'Questa stagione il calciatore Francesco Totti ha segnato 10 gol e non 5');

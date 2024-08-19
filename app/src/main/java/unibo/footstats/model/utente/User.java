@@ -1,27 +1,28 @@
 package unibo.footstats.model.utente;
 
+import java.util.List;
+import java.util.Objects;
+
 public class User extends Account {
-    private String email;
-    private String label;
+    private String etichetta;
 
     public User(final String name,
                 final String lastName,
                 final String username,
-                final String password,
-                final String email) {
-        super(name, lastName, username, password);
-        this.email = email;
+                final String etichetta) {
+        super(name, lastName, username);
+        this.etichetta = Objects.requireNonNullElse(etichetta, "N/A");
     }
 
-    public String getEmail() {
-        return email;
+    public List<String> getCredentials() {
+        return List.of(getName(), getLastName(), getUsername(), getEtichetta());
     }
 
-    public String getLabel() {
-        return label;
+    public String getEtichetta() {
+        return etichetta;
     }
 
-    public void setLabel(final String label) {
-        this.label = label;
+    public void setEtichetta(final String etichetta) {
+        this.etichetta = etichetta;
     }
 }

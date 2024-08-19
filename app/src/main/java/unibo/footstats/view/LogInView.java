@@ -1,22 +1,19 @@
 package unibo.footstats.view;
 
 import unibo.footstats.controller.Controller;
+import unibo.footstats.utility.AccountType;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.SQLException;
-import java.util.Arrays;
+
 
 public class LogInView extends JPanel {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
-    private String selectedRole = "user";
 
 
-    public LogInView(final Controller controller, final ActionListener actionListener) {
+    public LogInView(final Controller controller) {
         JLabel imageLabel = new JLabel();
         ImageIcon logoImage = new ImageIcon(ClassLoader.getSystemResource("images/logo/logo.png"));
         logoImage = new ImageIcon(logoImage.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH));
@@ -45,14 +42,21 @@ public class LogInView extends JPanel {
 
         this.add(centerPanel, BorderLayout.CENTER);
 
+        loginButton.addActionListener(e -> {
+            try {
+                controller.login(usernameField.getText(), new String(passwordField.getPassword()));
+            } catch (Exception ignored) {
+            }
+            if (controller.getLoggedAccount() != null) {
+                JOptionPane.showMessageDialog(this, "Login successful!");
+                this.setVisible(false);
+            } else {
+                JOptionPane.showMessageDialog(this, "Login failed!");
+            }
+        });
 
-        loginButton.addActionListener(actionListener);
 
         setVisible(true);
-    }
-
-    public void setSelectedRole(String selectedRole) {
-        this.selectedRole = selectedRole;
     }
 
 }

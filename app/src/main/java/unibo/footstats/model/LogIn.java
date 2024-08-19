@@ -1,21 +1,22 @@
 package unibo.footstats.model;
 
-import unibo.footstats.db.DatabaseConnection;
+
+import unibo.footstats.db.FootStatsDAO;
 
 import java.sql.*;
 
 public class LogIn{
     private String username;
     private String password;
-    private Connection connection;
+    private FootStatsDAO footStatsDAO;
 
 
-    public LogIn(final Connection connection) {
-        this.connection = connection;
+    public LogIn(final FootStatsDAO footStatsDAO) {
+        this.footStatsDAO = footStatsDAO;
     }
 
-    public void login(String username, String password) throws SQLException {
-
+    public boolean login(final String username, final String password) throws SQLException {
+        return footStatsDAO.login(username, password);
     }
 
 }

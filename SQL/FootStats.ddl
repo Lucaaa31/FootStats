@@ -102,6 +102,7 @@ create table RICHIESTE (
      Username varchar(64) not null,
      CodiceRichiesta int not null,
      Tipologia varchar(64) not null,
+     Stato varchar(32) not null,
      Descrizione varchar(500) not null,
      constraint ID_RICHIESTE_ID primary key (Username, CodiceRichiesta));
 
