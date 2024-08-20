@@ -5,6 +5,7 @@ import unibo.footstats.model.LogIn;
 import unibo.footstats.model.utente.Account;
 import unibo.footstats.model.utente.User;
 import unibo.footstats.utility.AccountType;
+import unibo.footstats.utility.Context;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -15,6 +16,7 @@ public class Controller {
     private AccountType loggedAccount;
     private User user;
     private Account admin;
+    private Context context = Context.LOGIN;
 
 
 
@@ -34,6 +36,22 @@ public class Controller {
 
     public List<String> getCredentials() {
         return user.getCredentials();
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(final Context context) {
+        this.context = context;
+    }
+
+    public String[] getCompetitions() {
+        return footStatsDAO.getCompetitions();
+    }
+
+    public List<String> searchPlayer(final String name, final String nationality) {
+        return footStatsDAO.searchPlayer(name, nationality);
     }
 
 

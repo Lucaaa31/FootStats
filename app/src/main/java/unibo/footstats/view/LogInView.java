@@ -1,7 +1,6 @@
 package unibo.footstats.view;
 
 import unibo.footstats.controller.Controller;
-import unibo.footstats.utility.AccountType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,8 +52,9 @@ public class LogInView extends JPanel {
             } else {
                 JOptionPane.showMessageDialog(this, "Login failed!");
             }
+            usernameField.setText("");
+            passwordField.setText("");
         });
-
 
         setVisible(true);
     }

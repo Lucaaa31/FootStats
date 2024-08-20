@@ -30,12 +30,12 @@ INSERT INTO ACCOUNT (Nome, Cognome, Username, Password) VALUES
 INSERT INTO AMMINISTRATORE (Username) VALUES
 ('mario.rossi');
 
-INSERT INTO CALCIATORE (Nome, Cognome, CF, Data_di_nascita, Altezza, Luogo_di_nascita, Piede_preferito) VALUES
-('Francesco', 'Totti', 'CF001', '1976-09-27', 1.80, 'Roma', 'Destro'),
-('Alessandro', 'Del Piero', 'CF002', '1974-11-09', 1.73, 'Conegliano', 'Destro'),
-('Roberto', 'Baggio', 'CF003', '1967-02-18', 1.74, 'Caldogno', 'Destro'),
-('Paolo', 'Maldini', 'CF004', '1968-06-26', 1.87, 'Milano', 'Sinistro'),
-('Gianluigi', 'Buffon', 'CF005', '1978-01-28', 1.92, 'Carrara', 'Destro');
+INSERT INTO CALCIATORE (Nome, Cognome, CF, Data_di_nascita,Nazionalità, Altezza, Luogo_di_nascita, Piede_preferito) VALUES
+('Francesco', 'Totti', 'CF001', '1976-09-27', 'Italiano', 1.80, 'Roma', 'Destro'),
+('Alessandro', 'Del Piero', 'CF002', '1974-11-09', 'Italiano', 1.73, 'Conegliano', 'Destro'),
+('Roberto', 'Baggio', 'CF003', '1967-02-18', 'Italiano',  1.74, 'Caldogno', 'Destro'),
+('Paolo', 'Maldini', 'CF004', '1968-06-26', 'Italiano',  1.87, 'Milano', 'Sinistro'),
+('Gianluigi', 'Buffon', 'CF005', '1978-01-28', 'Italiano',  1.92, 'Carrara', 'Destro');
 
 INSERT INTO SQUADRA (Nome, Nazione, TipoSquadra, Record_goal, Record_Presenze) VALUES
 ('AS Roma', 'Italia', 'Club', 1234, 890),

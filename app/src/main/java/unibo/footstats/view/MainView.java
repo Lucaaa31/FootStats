@@ -15,6 +15,7 @@ public class MainView extends JFrame {
     private SignInView signInView = new SignInView(controller);
     private HomePage homePageView = new HomePage(controller);
     private LogInView logInView = new LogInView(controller);
+    private PlayerSearch playerSearchView = new PlayerSearch(controller);
 
 
     public MainView() {
@@ -28,6 +29,7 @@ public class MainView extends JFrame {
         cardLayout.addLayoutComponent(signInView, "signIn");
         cardLayout.addLayoutComponent(homePageView, "homePage");
         cardLayout.addLayoutComponent(logInView, "logIn");
+        cardLayout.addLayoutComponent(playerSearchView, "playerSearch");
 
 
         JMenuBar menuBar = new JMenuBar();
@@ -43,6 +45,7 @@ public class MainView extends JFrame {
         this.add(logInView);
         this.add(signInView);
         this.add(homePageView);
+        this.add(playerSearchView);
 
 
         logIn.addActionListener(e -> {
@@ -66,6 +69,40 @@ public class MainView extends JFrame {
                     MainView.this.setSize(800, 600);
                     MainView.this.revalidate();
                 }
+            }
+        });
+
+        homePageView.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                System.out.println(controller.getContext());
+                switch (controller.getContext()) {
+                    case PLAYER_SEARCH:
+                        cardLayout.show(MainView.this.getContentPane(), "playerSearch");
+                        MainView.this.revalidate();
+                        break;
+                    case TEAM_SEARCH:
+                        break;
+                    case TOURNAMENT_SEARCH:
+                        break;
+                    case TRANSFER_MARKET:
+                        break;
+                    case LOGIN:
+                        menu.setVisible(true);
+                        cardLayout.show(MainView.this.getContentPane(), "logIn");
+                        MainView.this.setSize(600, 400);
+                        MainView.this.revalidate();
+                        break;
+                }
+
+            }
+        });
+
+        playerSearchView.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                cardLayout.show(MainView.this.getContentPane(), "homePage");
+                MainView.this.revalidate();
             }
         });
 

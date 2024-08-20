@@ -1,4 +1,5 @@
 -- *********************************************
+-- *********************************************
 -- * Standard SQL generation                   
 -- *--------------------------------------------
 -- * DB-MAIN version: 11.0.2              
@@ -38,6 +39,7 @@ create table CALCIATORE (
      Cognome varchar(64) not null,
      CF char(32) not null,
      Data_di_nascita date not null,
+     Nazionalità varchar(64) not null,
      Altezza numeric(64) not null,
      Luogo_di_nascita varchar(64) not null,
      Piede_preferito varchar(64) not null,

@@ -5,6 +5,8 @@ import unibo.footstats.model.utente.User;
 import unibo.footstats.utility.AccountType;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class FootStatsDAO implements AutoCloseable {
@@ -92,9 +94,6 @@ public class FootStatsDAO implements AutoCloseable {
             stmt.setString(1, username);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    System.out.println("Nome: " + rs.getString("Nome"));
-                    System.out.println("Cognome: " + rs.getString("Cognome"));
-                    System.out.println("Targhetta: " + rs.getString("Targhetta"));
                     if (getAccountType(username) == AccountType.ADMIN) {
                         return new User(rs.getString("Nome"),
                                 rs.getString("Cognome"),
@@ -114,6 +113,27 @@ public class FootStatsDAO implements AutoCloseable {
             }
 
         }
+        return null;
+    }
+
+    public String[] getCompetitions() {
+        final String query = "SELECT Nome FROM TIPO_COMPETIZIONE";
+        final List<String> competitions = new ArrayList<>();
+        competitions.add("Seleziona una competizione...");
+
+        try (PreparedStatement stmt = connection.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                competitions.add(rs.getString("Nome"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return competitions.toArray(new String[0]);
+    }
+
+    public List<String> searchPlayer(final String name, final String nationality){
+
         return null;
     }
 

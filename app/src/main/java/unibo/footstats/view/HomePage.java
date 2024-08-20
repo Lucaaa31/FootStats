@@ -1,6 +1,7 @@
 package unibo.footstats.view;
 
 import unibo.footstats.controller.Controller;
+import unibo.footstats.utility.Context;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +11,7 @@ public class HomePage extends JPanel {
     private JList<String> actionList;
     private JLabel welcomeLabel;
     private JLabel descriptionLabel;
+
 
     public HomePage(final Controller controller) {
         // Imposta il layout principale del pannello
@@ -59,7 +61,10 @@ public class HomePage extends JPanel {
                 "-> Calciomercato;",
                 "",
                 "",
-                "-> Invia una richiesta;"
+                "-> Invia una richiesta;",
+                "",
+                "",
+                "-> Logout"
         };
         actionList = new JList<>(listData);
         actionList.setFont(new Font("SansSerif", Font.PLAIN, 18)); // Imposta un font più grande per la lista
@@ -79,7 +84,33 @@ public class HomePage extends JPanel {
         // Configurazione dei listener per interazioni utente
         actionList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                JOptionPane.showMessageDialog(null, "Selected: " + actionList.getSelectedValue());
+                switch (actionList.getSelectedIndex()) {
+                    case 0:
+                        controller.setContext(Context.PLAYER_SEARCH);
+                        this.setVisible(false);
+                        break;
+                    case 1:
+
+                        this.setVisible(false);
+                        break;
+                    case 2:
+
+                        this.setVisible(false);
+                        break;
+                    case 3:
+
+                        this.setVisible(false);
+                        break;
+                    case 6:
+
+                        this.setVisible(false);
+                        break;
+                    case 9:
+                        controller.setContext(Context.LOGIN);
+                        this.setVisible(false);
+                        break;
+                }
+
             }
         });
 
