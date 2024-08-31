@@ -30,7 +30,7 @@ INSERT INTO ACCOUNT (Nome, Cognome, Username, Password) VALUES
 INSERT INTO AMMINISTRATORE (Username) VALUES
 ('mario.rossi');
 
-INSERT INTO CALCIATORE (Nome, Cognome, CF, Data_di_nascita,Nazionalità, Altezza, Luogo_di_nascita, Piede_preferito) VALUES
+INSERT INTO CALCIATORE (Nome, Cognome, CF, Data_di_nascita, Nazionalita, Altezza, Luogo_di_nascita, Piede_preferito) VALUES
 ('Francesco', 'Totti', 'CF001', '1976-09-27', 'Italiano', 1.80, 'Roma', 'Destro'),
 ('Alessandro', 'Del Piero', 'CF002', '1974-11-09', 'Italiano', 1.73, 'Conegliano', 'Destro'),
 ('Roberto', 'Baggio', 'CF003', '1967-02-18', 'Italiano',  1.74, 'Caldogno', 'Destro'),
@@ -73,7 +73,8 @@ INSERT INTO STATS_GIOCATORE_PARTITA (CF_Calciatore, AnnoCalcistico, TipoCompetiz
 
 INSERT INTO STATS_GIOCATORE_STAGIONE (CF_Calciatore, AnnoCalcistico, CodiceStatsStagionale, Goal_stagionali, Assist_stagionali, Valore_di_mercato, Presenze, Numero_maglia, Cartellini_stagionali, Ruolo) VALUES
 ('CF001', '2023/2024', 1, 10, 5, 2000000, 30, 10, 3, 'Attaccante'),
-('CF002', '2023/2024', 2, 15, 7, 1550000, 32, 9, 5, 'Centrocampista');
+('CF002', '2023/2024', 2, 15, 7, 1550000, 32, 9, 5, 'Centrocampista'),
+('CF003', '2023/2024', 3, 23, 5, 1233333, 45, 10, 2, 'Trequartista');
 
 INSERT INTO Trofeo (NomeTrofeo, Quantita) VALUES
 ('Scudetto', 1),

@@ -2,6 +2,7 @@ package unibo.footstats.view;
 
 import unibo.footstats.controller.Controller;
 import unibo.footstats.utility.AccountType;
+import unibo.footstats.utility.Context;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +17,8 @@ public class MainView extends JFrame {
     private HomePage homePageView = new HomePage(controller);
     private LogInView logInView = new LogInView(controller);
     private PlayerSearch playerSearchView = new PlayerSearch(controller);
+    private CompetitionView competitionView = new CompetitionView(controller);
+    private PlayerStatisticsView playerStatisticsView = new PlayerStatisticsView(controller);
 
 
     public MainView() {
@@ -30,6 +33,8 @@ public class MainView extends JFrame {
         cardLayout.addLayoutComponent(homePageView, "homePage");
         cardLayout.addLayoutComponent(logInView, "logIn");
         cardLayout.addLayoutComponent(playerSearchView, "playerSearch");
+        cardLayout.addLayoutComponent(competitionView, "competition");
+        cardLayout.addLayoutComponent(playerStatisticsView, "playerStatistics");
 
 
         JMenuBar menuBar = new JMenuBar();
@@ -46,6 +51,8 @@ public class MainView extends JFrame {
         this.add(signInView);
         this.add(homePageView);
         this.add(playerSearchView);
+        this.add(competitionView);
+        this.add(playerStatisticsView);
 
 
         logIn.addActionListener(e -> {
@@ -81,9 +88,14 @@ public class MainView extends JFrame {
                         cardLayout.show(MainView.this.getContentPane(), "playerSearch");
                         MainView.this.revalidate();
                         break;
+                    case PLAYER_STATISTICS:
+                        cardLayout.show(MainView.this.getContentPane(), "playerStatistics");
+                        break;
                     case TEAM_SEARCH:
                         break;
                     case TOURNAMENT_SEARCH:
+                        cardLayout.show(MainView.this.getContentPane(), "competition");
+                        MainView.this.revalidate();
                         break;
                     case TRANSFER_MARKET:
                         break;
@@ -99,6 +111,27 @@ public class MainView extends JFrame {
         });
 
         playerSearchView.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                if (controller.getContext() == Context.PLAYER_STATISTICS) {
+                    cardLayout.show(MainView.this.getContentPane(), "playerStatistics");
+                    MainView.this.revalidate();
+                }else{
+                    cardLayout.show(MainView.this.getContentPane(), "homePage");
+                }
+                MainView.this.revalidate();
+            }
+        });
+
+        playerStatisticsView.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                cardLayout.show(MainView.this.getContentPane(), "homePage");
+                MainView.this.revalidate();
+            }
+        });
+
+        competitionView.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentHidden(ComponentEvent e) {
                 cardLayout.show(MainView.this.getContentPane(), "homePage");

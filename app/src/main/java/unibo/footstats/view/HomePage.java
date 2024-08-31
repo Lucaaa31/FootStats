@@ -7,115 +7,113 @@ import javax.swing.*;
 import java.awt.*;
 
 public class HomePage extends JPanel {
-    private JButton accountButton;
-    private JList<String> actionList;
-    private JLabel welcomeLabel;
-    private JLabel descriptionLabel;
-
+    private final JButton accountButton;
+    private final JList<String> actionList;
+    private final JLabel welcomeLabel;
+    private final JLabel descriptionLabel;
 
     public HomePage(final Controller controller) {
         // Imposta il layout principale del pannello
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(10, 10));
+        setBackground(new Color(245, 245, 245)); // Colore di sfondo grigio chiaro per il pannello
 
-        // Creazione e configurazione del pannello superiore per contenere l'etichetta di benvenuto e il pulsante Account
-        JPanel topPanel = new JPanel(new BorderLayout());
+        // Creazione del pannello superiore con etichetta di benvenuto e pulsante account
+        JPanel topPanel = new JPanel(new BorderLayout(10, 10));
+        topPanel.setBackground(getBackground()); // Imposta lo stesso colore di sfondo del pannello principale
 
-        // Configurazione dell'etichetta di benvenuto con un font grande e centrato
-        welcomeLabel = new JLabel("Welcome in FootStats!", SwingConstants.CENTER);
-        welcomeLabel.setFont(new Font("SansSerif", Font.BOLD, 24)); // Imposta il testo in grassetto e di grandi dimensioni
-        welcomeLabel.setPreferredSize(new Dimension(0, 100)); // Imposta un'altezza fissa per l'etichetta
-        topPanel.add(welcomeLabel, BorderLayout.CENTER); // Aggiunge l'etichetta al centro del pannello superiore
+        // Creazione e stile dell'etichetta di benvenuto
+        welcomeLabel = new JLabel("Benvenuto su FootStats!", SwingConstants.CENTER);
+        welcomeLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
+        welcomeLabel.setForeground(new Color(34, 34, 34)); // Colore del testo grigio scuro
+        welcomeLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0)); // Aggiunge padding verticale
+        topPanel.add(welcomeLabel, BorderLayout.CENTER);
 
-        // Creazione e configurazione del pulsante "Account" posizionato in alto a destra
+        // Creazione e stile del pulsante account
         accountButton = new JButton("Account");
-        topPanel.add(accountButton, BorderLayout.EAST); // Aggiunge il pulsante sul lato destro del pannello superiore
+        accountButton.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        accountButton.setBackground(new Color(14, 85, 143)); // Colore blu acciaio per il pulsante
+        accountButton.setForeground(Color.WHITE);
+        accountButton.setFocusPainted(false);
+        accountButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        accountButton.setPreferredSize(new Dimension(100, 40)); // Dimensiona il pulsante in modo appropriato
+        topPanel.add(accountButton, BorderLayout.EAST);
 
-        // Aggiunta del pannello superiore al layout principale del pannello
+        // Aggiunta del pannello superiore al pannello principale
         add(topPanel, BorderLayout.NORTH);
 
-        // Creazione di un pannello per la descrizione con colori e bordo
-        JPanel descriptionPanel = new JPanel(new BorderLayout());
-        descriptionPanel.setBackground(new Color(230, 230, 250)); // Colore di sfondo lilla chiaro
-        descriptionPanel.setBorder(BorderFactory.createLineBorder(new Color(72, 61, 139), 2)); // Bordo viola scuro
+        // Creazione del pannello centrale per descrizione e azioni
+        JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
+        centerPanel.setBackground(getBackground());
 
-        // Creazione dell'etichetta di descrizione
-        descriptionLabel = new JLabel("<html>"
-                + "Benvenuto nella sezione di navigazione del sistema FootStats!<br>"
-                + "Qui puoi esplorare diverse funzionalita' offerte dall'applicazione.<br>"
-                + "Per iniziare, seleziona una delle opzioni elencate qui sotto:<br>");
-        descriptionLabel.setFont(new Font("SansSerif", Font.PLAIN, 16)); // Font medio
-        descriptionLabel.setHorizontalAlignment(SwingConstants.LEFT); // Centra il testo
+        // Creazione e stile dell'etichetta di descrizione
+        descriptionLabel = new JLabel("<html>Al momento ti trovi nella sezione di navigazione di FootStats!<br>" +
+                "Per esplorare le varie funzionalita' dell'applicazione " +
+                "seleziona un'opzione dall'elenco qui sotto per iniziare:</html>");
+        descriptionLabel.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        descriptionLabel.setForeground(new Color(64, 64, 64)); // Colore del testo grigio scuro per contrasto
+        descriptionLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Padding intorno al testo
+        centerPanel.add(descriptionLabel, BorderLayout.NORTH);
 
-        // Aggiunta dell'etichetta al pannello della descrizione
-        descriptionPanel.add(descriptionLabel, BorderLayout.CENTER);
-
-        // Creazione di un pannello per contenere la descrizione e la lista delle azioni
-        JPanel listPanel = new JPanel(new BorderLayout());
-        listPanel.add(descriptionPanel, BorderLayout.NORTH); // Aggiunge il pannello della descrizione in alto
-
-        // Creazione e configurazione della JList che rappresenta le opzioni disponibili
+        // Creazione e popolazione della lista delle azioni
         String[] listData = {
-                "-> Ricerca giocatore;",
-                "-> Ricerca squadra;",
-                "-> Ricerca campionato/torneo;",
-                "-> Calciomercato;",
+                "Cerca Giocatore",
+                "Cerca Squadra",
+                "Cerca Campionato/Torneo",
+                "Calciomercato",
+                "Invia una Richiesta",
                 "",
                 "",
-                "-> Invia una richiesta;",
                 "",
-                "",
-                "-> Logout"
+                "Logout"
         };
         actionList = new JList<>(listData);
-        actionList.setFont(new Font("SansSerif", Font.PLAIN, 18)); // Imposta un font più grande per la lista
-        actionList.setFixedCellHeight(40); // Altezza delle celle
-        actionList.setVisibleRowCount(10); // Numero di righe visibili
+        actionList.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        actionList.setFixedCellHeight(40);
+        actionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        actionList.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        actionList.setSelectionBackground(new Color(48, 101, 202)); // Colore blu fiordaliso quando selezionato
+        actionList.setSelectionForeground(Color.WHITE);
 
-        // Creazione di uno JScrollPane per la JList
+        // Avvolgi la lista in un JScrollPane
         JScrollPane scrollPane = new JScrollPane(actionList);
-        scrollPane.setPreferredSize(new Dimension(300, 300)); // Dimensioni del pannello a scorrimento
+        scrollPane.setPreferredSize(new Dimension(300, 300));
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
-        // Aggiunta dello JScrollPane al centro del pannello della lista
-        listPanel.add(scrollPane, BorderLayout.CENTER);
+        // Aggiunta dello JScrollPane al pannello centrale
+        centerPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Aggiunta del pannello contenente la descrizione e la lista al layout principale
-        add(listPanel, BorderLayout.CENTER);
+        // Aggiunta del pannello centrale al pannello principale
+        add(centerPanel, BorderLayout.CENTER);
 
-        // Configurazione dei listener per interazioni utente
+        // Aggiunta dei listener per l'interazione utente
+        accountButton.addActionListener(e -> {
+            new AccountInfo(controller);
+        });
+
         actionList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 switch (actionList.getSelectedIndex()) {
                     case 0:
                         controller.setContext(Context.PLAYER_SEARCH);
-                        this.setVisible(false);
                         break;
                     case 1:
-
-                        this.setVisible(false);
+                        controller.setContext(Context.TEAM_SEARCH);
                         break;
                     case 2:
-
-                        this.setVisible(false);
+                        controller.setContext(Context.TOURNAMENT_SEARCH);
                         break;
                     case 3:
-
-                        this.setVisible(false);
+                        controller.setContext(Context.TRANSFER_MARKET);
                         break;
-                    case 6:
-
-                        this.setVisible(false);
-                        break;
-                    case 9:
+                    case 8:
                         controller.setContext(Context.LOGIN);
-                        this.setVisible(false);
                         break;
+                    default:
+                        return;
                 }
-
+                this.setVisible(false);
+                actionList.clearSelection();
             }
         });
-
-        accountButton.addActionListener(e -> new AccountInfo(controller));
     }
-
-    
 }

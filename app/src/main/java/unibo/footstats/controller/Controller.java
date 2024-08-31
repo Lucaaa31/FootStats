@@ -2,10 +2,13 @@ package unibo.footstats.controller;
 
 import unibo.footstats.db.FootStatsDAO;
 import unibo.footstats.model.LogIn;
+import unibo.footstats.model.stagione.Stagione;
+import unibo.footstats.model.statistiche.PlayerStats;
 import unibo.footstats.model.utente.Account;
 import unibo.footstats.model.utente.User;
 import unibo.footstats.utility.AccountType;
 import unibo.footstats.utility.Context;
+import unibo.footstats.utility.PlayerResult;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -17,6 +20,7 @@ public class Controller {
     private User user;
     private Account admin;
     private Context context = Context.LOGIN;
+    private String currentCF;
 
 
 
@@ -46,14 +50,26 @@ public class Controller {
         this.context = context;
     }
 
-    public String[] getCompetitions() {
+    public List<String> getCompetitions() {
         return footStatsDAO.getCompetitions();
     }
 
-    public List<String> searchPlayer(final String name, final String nationality) {
-        return footStatsDAO.searchPlayer(name, nationality);
+    public List<PlayerResult> searchPlayer(final String name) {
+        return footStatsDAO.searchPlayer(name);
     }
 
+
+    public void setPlayer(final String CF) {
+        this.currentCF = CF;
+    }
+
+    public List<String> getSeasons() {
+        return footStatsDAO.getSeasons();
+    }
+
+    public PlayerStats getPlayerStats(final String season, final String competition) {
+        return footStatsDAO.getStatistics(currentCF, season, competition);
+    }
 
 
 

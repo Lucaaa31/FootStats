@@ -1,8 +1,10 @@
-package unibo.footstats.model.partita;
+package unibo.footstats.model.statistiche;
+
+import unibo.footstats.model.stagione.Stagione;
 
 public record StatsGiocatorePartita(
     String cfGiocatore,
-    String AnnoCalcistico,
+    Stagione AnnoCalcistico,
     String TipoCompetizione,
     int codicePartita,
     int codiceStatsPartita,

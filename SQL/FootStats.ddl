@@ -39,7 +39,7 @@ create table CALCIATORE (
      Cognome varchar(64) not null,
      CF char(32) not null,
      Data_di_nascita date not null,
-     Nazionalità varchar(64) not null,
+     Nazionalita varchar(64) not null,
      Altezza numeric(64) not null,
      Luogo_di_nascita varchar(64) not null,
      Piede_preferito varchar(64) not null,
@@ -143,7 +143,7 @@ create table STATS_GIOCATORE_STAGIONE (
      Presenze numeric(64) not null,
      Numero_maglia numeric(32),
      Cartellini_stagionali numeric(32) not null,
-     Ruolo varchar(64),
+     Ruolo varchar(64) not null,
      constraint ID_STATS_GIOCATORE_STAGIONE_ID primary key (AnnoCalcistico, CF_Calciatore, CodiceStatsStagionale));
 
 create table STORICO_PARTECIPAZIONI (

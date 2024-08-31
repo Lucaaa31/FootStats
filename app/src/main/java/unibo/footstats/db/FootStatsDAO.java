@@ -1,8 +1,10 @@
 package unibo.footstats.db;
 
-import unibo.footstats.model.utente.Account;
+import unibo.footstats.model.stagione.Stagione;
+import unibo.footstats.model.statistiche.PlayerStats;
 import unibo.footstats.model.utente.User;
 import unibo.footstats.utility.AccountType;
+import unibo.footstats.utility.PlayerResult;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -116,10 +118,10 @@ public class FootStatsDAO implements AutoCloseable {
         return null;
     }
 
-    public String[] getCompetitions() {
+    public List<String> getCompetitions() {
         final String query = "SELECT Nome FROM TIPO_COMPETIZIONE";
         final List<String> competitions = new ArrayList<>();
-        competitions.add("Seleziona una competizione...");
+        competitions.add("Tutte le competizioni");
 
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
@@ -129,13 +131,281 @@ public class FootStatsDAO implements AutoCloseable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return competitions.toArray(new String[0]);
+        return competitions;
     }
 
-    public List<String> searchPlayer(final String name, final String nationality){
+    public List<PlayerResult> searchPlayer(final String name) {
+        final String query = "SELECT c.CF, c.Nome, c.Cognome, sgs.Ruolo, s.Nome AS Squadra, c.Nazionalita, sgs.Valore_di_mercato " +
+                "FROM Calciatore c " +
+                "LEFT JOIN STATS_GIOCATORE_STAGIONE sgs ON c.CF = sgs.CF_Calciatore " +
+                "LEFT JOIN SQUADRA s ON sgs.CF_Calciatore = s.Nome " +
+                "WHERE LOWER(c.Nome) LIKE CONCAT('%', LOWER(?), '%') OR LOWER(c.Cognome) LIKE CONCAT('%', LOWER(?), '%');";
+
+
+        List<PlayerResult> results = new ArrayList<>();
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, name);
+            stmt.setString(2, name);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    results.add(new PlayerResult(
+                            rs.getString("CF"),
+                            rs.getString("Nome"),
+                            rs.getString("Cognome"),
+                            rs.getString("Ruolo"),
+                            Objects.isNull(rs.getString("Squadra")) ? "N/A" : rs.getString("Squadra"),
+                            rs.getString("Nazionalita"),
+                            rs.getString("Valore_di_mercato")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return results;
+    }
+
+    public List<String> getSeasons() {
+        final String query = "SELECT DISTINCT AnnoCalcistico FROM stagione";
+        final List<String> seasons = new ArrayList<>();
+        seasons.add("Tutte le stagioni");
+
+        try (PreparedStatement stmt = connection.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                seasons.add(rs.getString("AnnoCalcistico"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return seasons;
+    }
+
+    public PlayerStats getStatistics(final String cf, final String season, final String competition) {
+
+        if (season == null && competition == null) {
+            System.out.println("No season and competition");
+            return careerOnly(cf);
+        } else if (season != null && competition == null) {
+            System.out.println("Season only");
+            return seasonOnly(cf, season);
+        }else if (season == null) {
+            System.out.println("Competition only");
+            return competitionOnly(cf, competition);
+        }else {
+            System.out.println("Season and competition");
+            return seasonAndCompetition(cf, season, competition);
+        }
+
+
+
+
+    }
+
+    private PlayerStats competitionOnly(final String cf, final String competition) {
+        final String query= "SELECT " +
+                " cal.Nome, " +
+                " cal.Cognome, " +
+                " SUM(stats_partita.Goal) AS Goal, " +
+                " SUM(stats_partita.Assist) AS Assist, " +
+                " SUM(stats_partita.Cartellini) AS Cartellini, " +
+                " stats_stagione.Valore_di_mercato AS ValoreMercato, " +
+                " COUNT(stats_partita.CodicePartita) AS Presenze, " +
+                " stats_stagione.Numero_maglia AS NumeroMaglia, " +
+                " stats_stagione.Ruolo AS Ruolo " +
+                "FROM CALCIATORE cal " +
+                "JOIN " +
+                "    STATS_GIOCATORE_PARTITA stats_partita " +
+                "    ON cal.CF = stats_partita.CF_Calciatore " +
+                "JOIN " +
+                "    COMPETIZIONE comp " +
+                "    ON stats_partita.AnnoCalcistico = comp.AnnoCalcistico " +
+                "    AND stats_partita.TipoCompetizione = comp.TipoCompetizione " +
+                "    AND stats_partita.CodiceCompetizione = comp.CodiceCompetizione " +
+                "JOIN " +
+                "    STATS_GIOCATORE_STAGIONE stats_stagione " +
+                "    ON cal.CF = stats_stagione.CF_Calciatore " +
+                "    AND stats_partita.AnnoCalcistico = stats_stagione.AnnoCalcistico " +
+                "WHERE " +
+                "    cal.CF = ? " +
+                "    AND stats_partita.CodiceCompetizione = ? " +
+                "GROUP BY " +
+                "    cal.Nome, cal.Cognome, stats_stagione.Valore_di_mercato, stats_stagione.Numero_maglia, stats_stagione.Ruolo;";
+
+
+        try(PreparedStatement preparedStatement = connection.prepareStatement(query)){
+            preparedStatement.setString(1, cf);
+            preparedStatement.setString(2, competition);
+            PlayerStats rs = getPlayerStats(cf, preparedStatement);
+            if (rs != null) return rs;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    private PlayerStats careerOnly(final String cf) {
+        final String query = "SELECT " +
+                " cal.Nome, " +
+                " cal.Cognome, " +
+                " SUM(stats_giocatore_stagione.Goal_stagionali) AS Goal, " +
+                " SUM(stats_giocatore_stagione.Assist_stagionali) AS Assist, " +
+                " SUM(stats_giocatore_stagione.Cartellini_stagionali) AS Cartellini, " +
+                " MAX(stats_giocatore_stagione.Valore_di_mercato) AS ValoreMercato, " +
+                " SUM(stats_giocatore_stagione.Presenze) AS Presenze, " +
+                " SUM(stats_giocatore_stagione.Numero_maglia) AS NumeroMaglia, " +
+                " MAX(stats_giocatore_stagione.Ruolo) AS Ruolo " +
+                "FROM CALCIATORE cal " +
+                "JOIN " +
+                "    STATS_GIOCATORE_STAGIONE stats_giocatore_stagione " +
+                "    ON cal.CF = stats_giocatore_stagione.CF_Calciatore " +
+                "WHERE " +
+                "    cal.CF = ? ";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, cf);
+            PlayerStats rs = getPlayerStats(cf, stmt);
+            if (rs != null) return rs;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+
+        }
 
         return null;
     }
+
+
+    private PlayerStats getPlayerStats(final String cf, final PreparedStatement stmt) throws SQLException {
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return new PlayerStats(
+                        cf,
+                        rs.getString("Nome"),
+                        rs.getString("Cognome"),
+                        "Tutte le stagioni",
+                        rs.getInt("Goal"),
+                        rs.getInt("Assist"),
+                        rs.getInt("Cartellini"),
+                        rs.getDouble("ValoreMercato"),
+                        rs.getInt("Presenze"),
+                        rs.getInt("NumeroMaglia"),
+                        rs.getString("Ruolo")
+                );
+            }
+        }
+        return null;
+    }
+
+
+    private PlayerStats seasonOnly(final String cf, final String season){
+        String query = "SELECT " +
+                " cal.Nome, " +
+                " cal.Cognome, " +
+                " stats_giocatore_stagione.Goal_stagionali AS Goal, " +
+                " stats_giocatore_stagione.Assist_stagionali AS Assist, " +
+                " stats_giocatore_stagione.Cartellini_stagionali AS Cartellini, " +
+                " stats_giocatore_stagione.Valore_di_mercato, " +
+                " stats_giocatore_stagione.Presenze, " +
+                " stats_giocatore_stagione.Numero_maglia, " +
+                " stats_giocatore_stagione.Ruolo " +
+                "FROM CALCIATORE cal " +
+                "JOIN " +
+                "    STATS_GIOCATORE_STAGIONE stats_giocatore_stagione " +
+                "    ON cal.CF = stats_giocatore_stagione.CF_Calciatore " +
+                "WHERE " +
+                "    cal.CF = ? " +
+                "    AND stats_giocatore_stagione.AnnoCalcistico = ?;";
+
+
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, cf);
+            stmt.setString(2, season);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new PlayerStats(
+                            cf,
+                            rs.getString("Nome"),
+                            rs.getString("Cognome"),
+                            season,
+                            rs.getInt("Goal"),
+                            rs.getInt("Assist"),
+                            rs.getInt("Cartellini"),
+                            rs.getDouble("Valore_di_mercato"),
+                            rs.getInt("Presenze"),
+                            rs.getInt("Numero_maglia"),
+                            rs.getString("Ruolo")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    private PlayerStats seasonAndCompetition(final String cf, final String season, final String competition) {
+        String query = "SELECT " +
+                " cal.Nome, " +
+                " cal.Cognome, " +
+                " SUM(stats_partita.Goal) AS Goal, " +
+                " SUM(stats_partita.Assist) AS Assist, " +
+                " SUM(stats_partita.Cartellini) AS Cartellini, " +
+                " stats_stagione.Valore_di_mercato, " +
+                " COUNT(stats_partita.CodicePartita) AS Presenze, " +
+                " stats_stagione.Numero_maglia, " +
+                " stats_stagione.Ruolo " +
+                "FROM CALCIATORE cal " +
+                "JOIN " +
+                "    STATS_GIOCATORE_PARTITA stats_partita " +
+                "    ON cal.CF = stats_partita.CF_Calciatore " +
+                "JOIN " +
+                "    COMPETIZIONE comp " +
+                "    ON stats_partita.AnnoCalcistico = comp.AnnoCalcistico " +
+                "    AND stats_partita.TipoCompetizione = comp.TipoCompetizione " +
+                "    AND stats_partita.CodiceCompetizione = comp.CodiceCompetizione " +
+                "JOIN " +
+                "    STATS_GIOCATORE_STAGIONE stats_stagione " +
+                "    ON cal.CF = stats_stagione.CF_Calciatore " +
+                "    AND stats_partita.AnnoCalcistico = stats_stagione.AnnoCalcistico " +
+                "WHERE " +
+                "    cal.CF = ? " +
+                "    AND stats_partita.AnnoCalcistico = ? " +
+                "    AND stats_partita.CodiceCompetizione = ? " +
+                "GROUP BY " +
+                "    cal.Nome, cal.Cognome, stats_stagione.Valore_di_mercato, stats_stagione.Numero_maglia, stats_stagione.Ruolo;";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, cf);
+            stmt.setString(2, season);
+            stmt.setString(3, competition);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new PlayerStats(
+                            cf,
+                            rs.getString("Nome"),
+                            rs.getString("Cognome"),
+                            season,
+                            rs.getInt("TotaleGoalStagionali"),
+                            rs.getInt("TotaleAssistStagionali"),
+                            rs.getInt("TotaleCartelliniStagionali"),
+                            rs.getDouble("Valore_di_mercato"),
+                            rs.getInt("Presenze"),
+                            rs.getInt("Numero_maglia"),
+                            rs.getString("Ruolo")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+
+        }
+        return null;
+    }
+
+
 
     // 4. Aggiunta di un nuovo calciatore
 //    public void addPlayer(String nome, String cognome, String cf, Date dataNascita, int altezza, String luogoNascita, String piedePreferito) throws SQLException {
