@@ -1,4 +1,3 @@
--- Cancellazione di tutte le tabelle
 DELETE FROM PALMARES_STAGIONE_GIOCATORE;
 DELETE FROM PALMARES_SQUAD;
 DELETE FROM STORICO_PARTECIPAZIONI;
@@ -19,7 +18,6 @@ DELETE FROM UTENTE;
 DELETE FROM TROFEO;
 DELETE FROM ACCOUNT;
 
--- Inserimento di nuovi dati
 INSERT INTO ACCOUNT (Nome, Cognome, Username, Password) VALUES
 ('Luca', 'Camillini', 'a', '123'),
 ('Mario', 'Rossi', 'mario.rossi', 'password123'),
@@ -27,7 +25,7 @@ INSERT INTO ACCOUNT (Nome, Cognome, Username, Password) VALUES
 ('Giovanni', 'Verdi', 'giovanni.verdi', 'password456'),
 ('Marco', 'Violi', 'marco.violi', 'password789');
 
-INSERT INTO AMMINISTRATORE (Username) VALUES
+INSERT INTO AMMINISTRATORE (UsernameAmministratore) VALUES
 ('mario.rossi');
 
 INSERT INTO CALCIATORE (Nome, Cognome, CF, Data_di_nascita, Nazionalita, Altezza, Luogo_di_nascita, Piede_preferito) VALUES
@@ -56,25 +54,25 @@ INSERT INTO COMPETIZIONE (TipoCompetizione, AnnoCalcistico, CodiceCompetizione) 
 ('Coppa Italia', '2023/2024', 'COMP003');
 
 INSERT INTO PARTITA (AnnoCalcistico, TipoCompetizione, CodiceCompetizione, CodicePartita, Data, Stadio, Ora, SquadraCasa, SquadraOspite) VALUES
-('2023/2024', 'Serie A', 'COMP001', 1, '2023-08-20', 'Stadio Olimpico', 20, 'AS Roma', 'Juventus'),
-('2023/2024', 'Serie A', 'COMP001', 2, '2023-09-01', 'Allianz Stadium', 21, 'Juventus', 'AC Milan');
+('2023/2024', 'Serie A', 'COMP001', 'P001', '2023-08-20', 'Stadio Olimpico', '20:00', 'AS Roma', 'Juventus');
 
 INSERT INTO GOL (AnnoCalcistico, TipoCompetizione, CodiceCompetizione, CodicePartita, Marcatore, Minuto, Assistman) VALUES
-('2023/2024', 'Serie A', 'COMP001', 1, 'Francesco Totti', 34, 'Alessandro Del Piero'),
-('2023/2024', 'Serie A', 'COMP001', 2, 'Alessandro Del Piero', 58, 'Francesco Totti');
+('2023/2024', 'Serie A', 'COMP001', 'P001', 'Francesco Totti', 34, 'ff'),
+('2023/2024', 'Serie A', 'COMP001', 'P001', 'Alessandro Del Piero', 58, 'dd');
+
 
 INSERT INTO CONTRATTO (CF_Calciatore, DataFirma, Durata, Valore) VALUES
 ('CF001', '2022-07-01', '2 anni', 5000000),
 ('CF002', '2023-06-15', '3 anni', 6000000);
 
 INSERT INTO STATS_GIOCATORE_PARTITA (CF_Calciatore, AnnoCalcistico, TipoCompetizione, CodiceCompetizione, CodicePartita, CodiceStatsPartita, Goal, Assist, Cartellini) VALUES
-('CF001', '2023/2024', 'Serie A', 'COMP001', 1, 1, 1, 1, 0),
-('CF002', '2023/2024', 'Serie A', 'COMP001', 2, 1, 1, 1, 0);
+('CF001', '2023/2024', 'Serie A', 'COMP001', 'P001', 'StatsPart1', 1, 1, 0),
+('CF002', '2023/2024', 'Serie A', 'COMP001', 'P001', 'StatsPart1', 1, 1, 0);
 
 INSERT INTO STATS_GIOCATORE_STAGIONE (CF_Calciatore, AnnoCalcistico, CodiceStatsStagionale, Goal_stagionali, Assist_stagionali, Valore_di_mercato, Presenze, Numero_maglia, Cartellini_stagionali, Ruolo) VALUES
-('CF001', '2023/2024', 1, 10, 5, 2000000, 30, 10, 3, 'Attaccante'),
-('CF002', '2023/2024', 2, 15, 7, 1550000, 32, 9, 5, 'Centrocampista'),
-('CF003', '2023/2024', 3, 23, 5, 1233333, 45, 10, 2, 'Trequartista');
+('CF001', '2023/2024', 'Stats1', 10, 5, 2000000, 30, 10, 3, 'Attaccante'),
+('CF002', '2023/2024', 'Stats2', 15, 7, 1550000, 32, 9, 5, 'Centrocampista'),
+('CF003', '2023/2024', 'Stats3', 23, 5, 1233333, 45, 10, 2, 'Trequartista');
 
 INSERT INTO Trofeo (NomeTrofeo, Quantita) VALUES
 ('Scudetto', 1),
@@ -85,8 +83,8 @@ INSERT INTO PALMARES_SQUAD (NomeSquadra, NomeTrofeo) VALUES
 ('Juventus', 'Coppa Italia');
 
 INSERT INTO PALMARES_STAGIONE_GIOCATORE (AnnoCalcistico, CF_Calciatore, CodiceStatsStagionale, NomeTrofeo) VALUES
-('2023/2024', 'CF001', 1, 'Scudetto'),
-('2023/2024', 'CF002', 2, 'Coppa Italia');
+('2023/2024', 'CF001', 'Stats1', 'Scudetto'),
+('2023/2024', 'CF002', 'Stats2', 'Coppa Italia');
 
 INSERT INTO PARTECIPAZIONE (NomeSquadra, AnnoCalcistico, TipoCompetizione, CodiceCompetizione, Piazzamento) VALUES
 ('AS Roma', '2023/2024', 'Serie A', 'COMP001', '1º posto'),
@@ -94,7 +92,7 @@ INSERT INTO PARTECIPAZIONE (NomeSquadra, AnnoCalcistico, TipoCompetizione, Codic
 ('AC Milan', '2023/2024', 'Serie A', 'COMP001', '3º posto');
 
 INSERT INTO STORICO_PARTECIPAZIONI (CF_Calciatore, AnnoCalcistico, CodiceStorico, NomeSquadra) VALUES
-('CF001', '2022/2023', 'ST001', 'AS Roma'),
+('CF001', '2023/2024', 'ST001', 'AS Roma'),
 ('CF002', '2023/2024', 'ST002', 'Juventus'),
 ('CF003', '2023/2024', 'ST003', NULL);
 
@@ -104,5 +102,5 @@ INSERT INTO UTENTE (Username, Targhetta) VALUES
 ('giovanni.verdi', 'Non Attendibile'),
 ('marco.violi', NULL);
 
-INSERT INTO RICHIESTE (Username, CodiceRichiesta, Tipologia, Stato, Descrizione) VALUES
+INSERT INTO RICHIESTE (UsernameUtente, CodiceRichiesta, Tipologia, Stato, Descrizione) VALUES
 ('luigi.bianchi', 1, 'Modifica', 'Non visionata', 'Questa stagione il calciatore Francesco Totti ha segnato 10 gol e non 5');
