@@ -1,8 +1,6 @@
 package unibo.footstats.controller;
 
 import unibo.footstats.db.FootStatsDAO;
-import unibo.footstats.model.LogIn;
-import unibo.footstats.model.stagione.Stagione;
 import unibo.footstats.model.statistiche.PlayerStats;
 import unibo.footstats.model.utente.Account;
 import unibo.footstats.model.utente.User;
@@ -15,7 +13,6 @@ import java.util.List;
 
 public class Controller {
     private FootStatsDAO footStatsDAO = new FootStatsDAO();
-    private LogIn logIn = new LogIn(footStatsDAO);
     private AccountType loggedAccount;
     private User user;
     private Account admin;
@@ -25,13 +22,17 @@ public class Controller {
 
 
     public void login(final String username, final String password) throws SQLException {
-        if (logIn.login(username, password)){
-            System.out.println("Login successful!");
+        if (footStatsDAO.login(username, password)){
+            System.out.println(username + " " + password);
             loggedAccount = footStatsDAO.getAccountType(username);
-            System.out.println(loggedAccount);
             user = footStatsDAO.getAccount(username);
-            System.out.println(footStatsDAO.getAccount(username));
         }
+    }
+
+    public void logout() {
+        loggedAccount = null;
+        user = null;
+        context = Context.LOGIN;
     }
 
     public AccountType getLoggedAccount() {

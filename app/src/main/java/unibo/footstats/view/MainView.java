@@ -1,7 +1,6 @@
 package unibo.footstats.view;
 
 import unibo.footstats.controller.Controller;
-import unibo.footstats.utility.AccountType;
 import unibo.footstats.utility.Context;
 
 import javax.swing.*;
@@ -13,12 +12,12 @@ public class MainView extends JFrame {
     private CardLayout cardLayout = new CardLayout();
     private Controller controller = new Controller();
 
-    private SignInView signInView = new SignInView(controller);
+    private SignIn signIn = new SignIn(controller);
     private HomePage homePageView = new HomePage(controller);
-    private LogInView logInView = new LogInView(controller);
+    private LogIn logIn = new LogIn(controller);
     private PlayerSearch playerSearchView = new PlayerSearch(controller);
-    private CompetitionView competitionView = new CompetitionView(controller);
-    private PlayerStatisticsView playerStatisticsView = new PlayerStatisticsView(controller);
+    private CompetitionSelection competitionSelection = new CompetitionSelection(controller);
+    private PlayerStatistics playerStatistics = new PlayerStatistics(controller);
 
 
     public MainView() {
@@ -29,12 +28,12 @@ public class MainView extends JFrame {
 
         setLayout(cardLayout);
 
-        cardLayout.addLayoutComponent(signInView, "signIn");
+        cardLayout.addLayoutComponent(signIn, "signIn");
         cardLayout.addLayoutComponent(homePageView, "homePage");
-        cardLayout.addLayoutComponent(logInView, "logIn");
+        cardLayout.addLayoutComponent(logIn, "logIn");
         cardLayout.addLayoutComponent(playerSearchView, "playerSearch");
-        cardLayout.addLayoutComponent(competitionView, "competition");
-        cardLayout.addLayoutComponent(playerStatisticsView, "playerStatistics");
+        cardLayout.addLayoutComponent(competitionSelection, "competition");
+        cardLayout.addLayoutComponent(playerStatistics, "playerStatistics");
 
 
         JMenuBar menuBar = new JMenuBar();
@@ -47,12 +46,12 @@ public class MainView extends JFrame {
         menuBar.add(menu);
         setJMenuBar(menuBar);
 
-        this.add(logInView);
-        this.add(signInView);
+        this.add(this.logIn);
+        this.add(this.signIn);
         this.add(homePageView);
         this.add(playerSearchView);
-        this.add(competitionView);
-        this.add(playerStatisticsView);
+        this.add(competitionSelection);
+        this.add(playerStatistics);
 
 
         logIn.addActionListener(e -> {
@@ -67,7 +66,7 @@ public class MainView extends JFrame {
             this.revalidate();
         });
 
-        logInView.addComponentListener(new ComponentAdapter() {
+        this.logIn.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentHidden(ComponentEvent e) {
                 menu.setVisible(false);
@@ -102,6 +101,7 @@ public class MainView extends JFrame {
                     case LOGIN:
                         menu.setVisible(true);
                         cardLayout.show(MainView.this.getContentPane(), "logIn");
+                        controller.logout();
                         MainView.this.setSize(600, 400);
                         MainView.this.revalidate();
                         break;
@@ -123,7 +123,7 @@ public class MainView extends JFrame {
             }
         });
 
-        playerStatisticsView.addComponentListener(new ComponentAdapter() {
+        playerStatistics.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentHidden(ComponentEvent e) {
                 cardLayout.show(MainView.this.getContentPane(), "homePage");
@@ -131,7 +131,7 @@ public class MainView extends JFrame {
             }
         });
 
-        competitionView.addComponentListener(new ComponentAdapter() {
+        competitionSelection.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentHidden(ComponentEvent e) {
                 cardLayout.show(MainView.this.getContentPane(), "homePage");
@@ -141,8 +141,8 @@ public class MainView extends JFrame {
 
 
 
-        logInView.setVisible(false);
-        signInView.setVisible(false);
+        this.logIn.setVisible(false);
+        this.signIn.setVisible(false);
 
         setVisible(true);
     }

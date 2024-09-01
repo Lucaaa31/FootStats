@@ -11,14 +11,14 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Objects;
 
-public class PlayerStatisticsView extends JPanel {
+public class PlayerStatistics extends JPanel {
     private final Controller controller;
     private JComboBox<String> seasonComboBox;
     private JComboBox<String> competitionComboBox;
     private JEditorPane statisticsPane; // Changed to JEditorPane
     private JButton backButton;
 
-    public PlayerStatisticsView(final Controller controller) {
+    public PlayerStatistics(final Controller controller) {
         this.controller = controller;
         initializeComponents();
         setLayout(new BorderLayout());
@@ -54,7 +54,7 @@ public class PlayerStatisticsView extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 controller.setContext(Context.HOME_PAGE);
-                PlayerStatisticsView.super.setVisible(false);
+                PlayerStatistics.super.setVisible(false);
             }
         });
     }

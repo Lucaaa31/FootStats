@@ -5,14 +5,14 @@ import unibo.footstats.controller.Controller;
 import javax.swing.*;
 import java.awt.*;
 
-public class SignInView extends JPanel {
-    private JTextField nameField;
-    private JTextField surnameField;
+
+public class LogIn extends JPanel {
     private JTextField usernameField;
     private JPasswordField passwordField;
-    private JButton signInButton;
+    private JButton loginButton;
 
-    public SignInView(final Controller controller) {
+
+    public LogIn(final Controller controller) {
         JLabel imageLabel = new JLabel();
         ImageIcon logoImage = new ImageIcon(ClassLoader.getSystemResource("images/logo/logo.png"));
         logoImage = new ImageIcon(logoImage.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH));
@@ -21,35 +21,42 @@ public class SignInView extends JPanel {
 
         this.add(imageLabel, BorderLayout.NORTH);
 
-        JPanel loginPanel = new JPanel(new GridLayout(5, 1, 10, 10));
+        JPanel loginPanel = new JPanel(new GridLayout(3, 1, 10, 10));
 
-        JLabel nameLabel = new JLabel("Name:");
-        nameField = new JTextField();
-        JLabel surnameLabel = new JLabel("Surname:");
-        surnameField = new JTextField();
         JLabel userLabel = new JLabel("Username:");
         usernameField = new JTextField();
         JLabel passLabel = new JLabel("Password:");
         passwordField = new JPasswordField();
-        signInButton = new JButton("Sign In");
 
-        loginPanel.add(nameLabel);
-        loginPanel.add(nameField);
-        loginPanel.add(surnameLabel);
-        loginPanel.add(surnameField);
+        loginButton = new JButton("Login");
+
         loginPanel.add(userLabel);
         loginPanel.add(usernameField);
         loginPanel.add(passLabel);
         loginPanel.add(passwordField);
-        loginPanel.add(signInButton);
-
+        loginPanel.add(loginButton);
 
         JPanel centerPanel = new JPanel(new GridBagLayout());
         centerPanel.add(loginPanel);
 
         this.add(centerPanel, BorderLayout.CENTER);
 
+        loginButton.addActionListener(e -> {
+            try {
+                controller.login(usernameField.getText(), new String(passwordField.getPassword()));
+            } catch (Exception ignored) {
+            }
+            if (controller.getLoggedAccount() != null) {
+                JOptionPane.showMessageDialog(this, "Login successful!");
+                this.setVisible(false);
+            } else {
+                JOptionPane.showMessageDialog(this, "Login failed!");
+            }
+            usernameField.setText("");
+            passwordField.setText("");
+        });
 
         setVisible(true);
     }
+
 }

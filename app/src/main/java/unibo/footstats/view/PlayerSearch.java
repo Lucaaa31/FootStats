@@ -69,12 +69,14 @@ public class PlayerSearch extends JPanel {
 
                     controller.setPlayer(resultSet.get(resultTable.getSelectedRow()).CF());
                     controller.setContext(Context.PLAYER_STATISTICS);
+
                     PlayerSearch.super.setVisible(false);
+                    resultTable.clearSelection();
+                    searchField.setText("");
                 }
             }
         });
 
-            // Crea il pannello per il pulsante di ritorno
         JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         backButton = new JButton("Back");
         backPanel.add(backButton);
