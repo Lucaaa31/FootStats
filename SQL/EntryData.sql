@@ -104,3 +104,4 @@ INSERT INTO UTENTE (Username, Targhetta) VALUES
 
 INSERT INTO RICHIESTE (UsernameUtente, CodiceRichiesta, Tipologia, Stato, Descrizione) VALUES
 ('luigi.bianchi', 1, 'Modifica', 'Non visionata', 'Questa stagione il calciatore Francesco Totti ha segnato 10 gol e non 5');
+

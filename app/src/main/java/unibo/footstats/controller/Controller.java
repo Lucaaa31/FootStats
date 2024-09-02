@@ -21,6 +21,7 @@ public class Controller {
 
 
 
+
     public void login(final String username, final String password) throws SQLException {
         if (footStatsDAO.login(username, password)){
             System.out.println(username + " " + password);
@@ -70,6 +71,14 @@ public class Controller {
 
     public PlayerStats getPlayerStats(final String season, final String competition) {
         return footStatsDAO.getStatistics(currentCF, season, competition);
+    }
+
+    public void submitRequest(final String request, final String requestType) throws SQLException {
+        footStatsDAO.submitRequest(user.getUsername(), request, requestType);
+    }
+
+    public String[][] getRequestsStatus() {
+        return footStatsDAO.getRequestsStatus(user.getUsername());
     }
 
 

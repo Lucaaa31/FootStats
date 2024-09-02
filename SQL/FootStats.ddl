@@ -109,7 +109,7 @@ create table RICHIESTE (
      CodiceRichiesta char(64) not null,
      Tipologia varchar(64) not null,
      Descrizione varchar(500) not null,
-     Stato char(32) not null,
+     Stato varchar(32) not null,
      constraint ID_RICHIESTE_ID primary key (UsernameUtente, CodiceRichiesta));
 
 create table SQUADRA (

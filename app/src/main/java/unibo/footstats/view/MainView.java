@@ -18,6 +18,7 @@ public class MainView extends JFrame {
     private PlayerSearch playerSearchView = new PlayerSearch(controller);
     private CompetitionSelection competitionSelection = new CompetitionSelection(controller);
     private PlayerStatistics playerStatistics = new PlayerStatistics(controller);
+    private Request request = new Request(controller);
 
 
     public MainView() {
@@ -34,6 +35,7 @@ public class MainView extends JFrame {
         cardLayout.addLayoutComponent(playerSearchView, "playerSearch");
         cardLayout.addLayoutComponent(competitionSelection, "competition");
         cardLayout.addLayoutComponent(playerStatistics, "playerStatistics");
+        cardLayout.addLayoutComponent(request, "request");
 
 
         JMenuBar menuBar = new JMenuBar();
@@ -52,6 +54,7 @@ public class MainView extends JFrame {
         this.add(playerSearchView);
         this.add(competitionSelection);
         this.add(playerStatistics);
+        this.add(request);
 
 
         logIn.addActionListener(e -> {
@@ -98,6 +101,10 @@ public class MainView extends JFrame {
                         break;
                     case TRANSFER_MARKET:
                         break;
+                    case REQUEST:
+                        cardLayout.show(MainView.this.getContentPane(), "request");
+                        MainView.this.revalidate();
+                        break;
                     case LOGIN:
                         menu.setVisible(true);
                         cardLayout.show(MainView.this.getContentPane(), "logIn");
@@ -132,6 +139,14 @@ public class MainView extends JFrame {
         });
 
         competitionSelection.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                cardLayout.show(MainView.this.getContentPane(), "homePage");
+                MainView.this.revalidate();
+            }
+        });
+
+        request.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentHidden(ComponentEvent e) {
                 cardLayout.show(MainView.this.getContentPane(), "homePage");

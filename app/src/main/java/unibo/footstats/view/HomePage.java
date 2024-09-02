@@ -105,6 +105,9 @@ public class HomePage extends JPanel {
                     case 3:
                         controller.setContext(Context.TRANSFER_MARKET);
                         break;
+                    case 4:
+                        controller.setContext(Context.REQUEST);
+                        break;
                     case 8:
                         controller.setContext(Context.LOGIN);
                         break;

@@ -22,6 +22,7 @@ public class CompetitionSelection extends JPanel {
 
         // Initialize the combo box
         String[] options = controller.getSeasons().toArray(new String[0]);
+        options[0] = "Seleziona una stagione";
         comboBox = new JComboBox<>(options);
         add(comboBox, BorderLayout.NORTH);
 
@@ -38,13 +39,10 @@ public class CompetitionSelection extends JPanel {
         addLogo("Bundesliga");
 
         // Initialize the back button
-        backButton = new JButton("Back");
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controller.setContext(Context.HOME_PAGE);
-                CompetitionSelection.super.setVisible(false);
-            }
+        backButton = new JButton("Indietro");
+        backButton.addActionListener(e -> {
+            controller.setContext(Context.HOME_PAGE);
+            CompetitionSelection.super.setVisible(false);
         });
 
         JPanel bottomPanel = new JPanel(new BorderLayout());
@@ -73,7 +71,7 @@ public class CompetitionSelection extends JPanel {
             }
 
             public void mouseClicked(MouseEvent evt) {
-
+                // TODO: CONTROLLO SULLA SELEZIONE DELLA STAGIONE
             }
         });
     }

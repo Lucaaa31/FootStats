@@ -33,16 +33,16 @@ public class FootStatsDAO implements AutoCloseable {
 
     // 1. Registrazione di un nuovo utente
     public boolean registerUser(final String nome,
-                             final String cognome,
-                             final String username,
-                             final String password) throws SQLException {
+                                final String cognome,
+                                final String username,
+                                final String password) throws SQLException {
         String query = "INSERT INTO ACCOUNT (Nome, Cognome, Username, Password) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, nome);
             stmt.setString(2, cognome);
             stmt.setString(3, username);
             stmt.setString(4, password);
-        }catch (SQLException ignored){
+        } catch (SQLException ignored) {
             return false;
         }
         return true;
@@ -56,7 +56,7 @@ public class FootStatsDAO implements AutoCloseable {
             try (ResultSet rs = stmt.executeQuery()) {
                 rs.next();
                 return rs.getString("Password").equals(password);
-            }catch (SQLException e){
+            } catch (SQLException e) {
                 return false;
             }
         }
@@ -66,9 +66,9 @@ public class FootStatsDAO implements AutoCloseable {
     public AccountType getAccountType(final String username) throws SQLException {
         final String query = "SELECT account.Username AS ACC_NAME,"
                 + " utente.Username AS IS_USR,"
-                + " amministratore.username AS IS_AMM "
+                + " amministratore.UsernameAmministratore AS IS_AMM "
                 + "FROM account LEFT JOIN utente ON utente.Username = account.Username "
-                + "LEFT JOIN amministratore ON amministratore.username = account.username\n"
+                + "LEFT JOIN amministratore ON amministratore.UsernameAmministratore = account.username\n"
                 + "WHERE account.username = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, username);
@@ -90,7 +90,7 @@ public class FootStatsDAO implements AutoCloseable {
     // Account
     public User getAccount(final String username) throws SQLException {
         String query = "SELECT Nome, Cognome, Targhetta FROM account "
-                    + "LEFT JOIN utente ON account.Username = utente.Username WHERE account.Username = ? ";
+                + "LEFT JOIN utente ON account.Username = utente.Username WHERE account.Username = ? ";
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, username);
@@ -102,7 +102,7 @@ public class FootStatsDAO implements AutoCloseable {
                                 username,
                                 "Amministratore"
                         );
-                    }else {
+                    } else {
                         return new User(rs.getString("Nome"),
                                 rs.getString("Cognome"),
                                 username,
@@ -190,21 +190,19 @@ public class FootStatsDAO implements AutoCloseable {
         } else if (season != null && competition == null) {
             System.out.println("Season only");
             return seasonOnly(cf, season);
-        }else if (season == null) {
+        } else if (season == null) {
             System.out.println("Competition only");
             return competitionOnly(cf, competition);
-        }else {
+        } else {
             System.out.println("Season and competition");
             return seasonAndCompetition(cf, season, competition);
         }
 
 
-
-
     }
 
     private PlayerStats competitionOnly(final String cf, final String competition) {
-        final String query= "SELECT " +
+        final String query = "SELECT " +
                 " cal.Nome, " +
                 " cal.Cognome, " +
                 " SUM(stats_partita.Goal) AS Goal, " +
@@ -234,7 +232,7 @@ public class FootStatsDAO implements AutoCloseable {
                 "    cal.Nome, cal.Cognome, stats_stagione.Valore_di_mercato, stats_stagione.Numero_maglia, stats_stagione.Ruolo;";
 
 
-        try(PreparedStatement preparedStatement = connection.prepareStatement(query)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, cf);
             preparedStatement.setString(2, competition);
             PlayerStats rs = getPlayerStats(cf, preparedStatement);
@@ -299,7 +297,7 @@ public class FootStatsDAO implements AutoCloseable {
     }
 
 
-    private PlayerStats seasonOnly(final String cf, final String season){
+    private PlayerStats seasonOnly(final String cf, final String season) {
         String query = "SELECT " +
                 " cal.Nome, " +
                 " cal.Cognome, " +
@@ -317,7 +315,6 @@ public class FootStatsDAO implements AutoCloseable {
                 "WHERE " +
                 "    cal.CF = ? " +
                 "    AND stats_giocatore_stagione.AnnoCalcistico = ?;";
-
 
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -405,6 +402,57 @@ public class FootStatsDAO implements AutoCloseable {
         return null;
     }
 
+    public void submitRequest(final String username,
+                              final String Descrizione,
+                            final String Tipologia) throws SQLException {
+        String query = "INSERT INTO RICHIESTE (UsernameUtente, CodiceRichiesta, Tipologia, Stato, Descrizione) VALUES (?, ?, ?, ?, ?)";
+        int countA = 0;
+        int countM = 0;
+        int countR = 0;
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, username);
+            switch (Tipologia) {
+                case "Aggiunta":
+                    countA++;
+                    stmt.setString(2, "A" + countA + System.currentTimeMillis());
+                    break;
+                case "Modifica":
+                    countM++;
+                    stmt.setString(2, "M" + countM + System.currentTimeMillis());
+                    break;
+                case "Rimozione":
+                    countR++;
+                    stmt.setString(2, "R" + countR + System.currentTimeMillis());
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid request type");
+            }
+            stmt.setString(3, Tipologia);
+            stmt.setString(4, "Non visionata");
+            stmt.setString(5, Descrizione);
+            stmt.executeUpdate();
+        }
+    }
+
+    public String[][] getRequestsStatus(final String username) {
+        final String query = "SELECT Tipologia, Stato, Descrizione FROM RICHIESTE WHERE UsernameUtente = ?";
+        final List<String[]> requests = new ArrayList<>();
+
+        try (PreparedStatement stmt = connection.prepareStatement(query) ) {
+             stmt.setString(1, username);
+             ResultSet rs = stmt.executeQuery();
+             while (rs.next()) {
+                 requests.add(new String[] {
+                         rs.getString("Descrizione"),
+                         rs.getString("Tipologia"),
+                         rs.getString("Stato")
+                 });
+             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return requests.toArray(new String[0][0]);
+    }
 
 
     // 4. Aggiunta di un nuovo calciatore
@@ -645,6 +693,6 @@ public class FootStatsDAO implements AutoCloseable {
 //            }
 //        }
 //    }
-    }
+}
 
 

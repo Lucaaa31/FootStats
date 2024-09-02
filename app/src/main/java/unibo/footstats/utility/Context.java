@@ -7,5 +7,6 @@ public enum Context {
     TEAM_SEARCH,
     TOURNAMENT_SEARCH,
     TRANSFER_MARKET,
+    REQUEST,
     LOGIN
 }
