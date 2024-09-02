@@ -61,7 +61,7 @@ public class Request extends JPanel {
                 // Handle submit action here
                 String request = requestTextArea.getText();
                 String requestType = (String) requestTypeComboBox.getSelectedItem();
-                requestTextArea.setText(""); 
+                requestTextArea.setText("");
                 try {
                     controller.submitRequest(request, requestType);
                 } catch (SQLException ex) {
@@ -75,7 +75,7 @@ public class Request extends JPanel {
         refreshButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                updateRequestTable(); // Refresh the table when button is clicked
+                updateRequestTable();
             }
         });
 
@@ -125,6 +125,7 @@ public class Request extends JPanel {
             tableModel.addRow(row);
         }
     }
+
 
     // Custom TableModel to make cells non-editable
     private class NonEditableTableModel extends DefaultTableModel {

@@ -5,11 +5,11 @@ import unibo.footstats.utility.Context;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.event.*;
 
 public class MainView extends JFrame {
     private CardLayout cardLayout = new CardLayout();
+    private JMenu menu = new JMenu("Log In");
     private Controller controller = new Controller();
 
     private SignIn signIn = new SignIn(controller);
@@ -39,7 +39,7 @@ public class MainView extends JFrame {
 
 
         JMenuBar menuBar = new JMenuBar();
-        JMenu menu = new JMenu("Log In");
+
         JMenuItem logIn = new JMenuItem("Log In");
         JMenuItem signIn = new JMenuItem("Sign In");
 
@@ -69,17 +69,11 @@ public class MainView extends JFrame {
             this.revalidate();
         });
 
-        this.logIn.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentHidden(ComponentEvent e) {
-                menu.setVisible(false);
-                if (controller.getLoggedAccount() != null) {
-                    cardLayout.show(MainView.this.getContentPane(), "homePage");
-                    MainView.this.setSize(800, 600);
-                    MainView.this.revalidate();
-                }
-            }
-        });
+        this.logIn.addComponentListener(getComponentListener());
+
+        this.signIn.addComponentListener(getComponentListener());
+
+
 
         homePageView.addComponentListener(new ComponentAdapter() {
             @Override
@@ -160,5 +154,19 @@ public class MainView extends JFrame {
         this.signIn.setVisible(false);
 
         setVisible(true);
+    }
+
+    private ComponentListener getComponentListener() {
+        return new ComponentAdapter() {
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                if (controller.getLoggedAccount() != null) {
+                    menu.setVisible(false);
+                    cardLayout.show(MainView.this.getContentPane(), "homePage");
+                    MainView.this.setSize(800, 600);
+                    MainView.this.revalidate();
+                }
+            }
+        };
     }
 }

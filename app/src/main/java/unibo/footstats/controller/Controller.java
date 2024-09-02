@@ -30,6 +30,13 @@ public class Controller {
         }
     }
 
+    public void registerUser(final String name, final String surname, final String username, final String password) throws SQLException {
+        if(footStatsDAO.registerUser(name, surname, username, password)){
+            loggedAccount = AccountType.USER;
+            user = footStatsDAO.getAccount(username);
+        }
+    }
+
     public void logout() {
         loggedAccount = null;
         user = null;

@@ -1,9 +1,11 @@
 package unibo.footstats.view;
 
 import unibo.footstats.controller.Controller;
+import unibo.footstats.utility.Context;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class SignIn extends JPanel {
     private JTextField nameField;
@@ -48,6 +50,30 @@ public class SignIn extends JPanel {
         centerPanel.add(loginPanel);
 
         this.add(centerPanel, BorderLayout.CENTER);
+
+        signInButton.addActionListener(e -> {
+            String name = nameField.getText();
+            String surname = surnameField.getText();
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
+
+            try {
+                controller.registerUser(name, surname, username, password);
+            } catch (Exception ignored) {
+            }
+            if (controller.getLoggedAccount() != null) {
+                JOptionPane.showMessageDialog(this, "Registrazione avvenuta con successo!");
+                this.setVisible(false);
+            } else {
+                JOptionPane.showMessageDialog(null, "L'username che hai selezionato esiste gia'", "Errore", JOptionPane.ERROR_MESSAGE);
+            }
+
+
+            nameField.setText("");
+            surnameField.setText("");
+            usernameField.setText("");
+            passwordField.setText("");
+        });
 
 
         setVisible(true);

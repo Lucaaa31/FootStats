@@ -35,14 +35,24 @@ public class FootStatsDAO implements AutoCloseable {
     public boolean registerUser(final String nome,
                                 final String cognome,
                                 final String username,
-                                final String password) throws SQLException {
+                                final String password){
         String query = "INSERT INTO ACCOUNT (Nome, Cognome, Username, Password) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, nome);
             stmt.setString(2, cognome);
             stmt.setString(3, username);
             stmt.setString(4, password);
-        } catch (SQLException ignored) {
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            return false;
+        }
+
+        String query2 = "INSERT INTO UTENTE (Username) VALUES (?)";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query2)) {
+            stmt.setString(1, username);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
             return false;
         }
         return true;
