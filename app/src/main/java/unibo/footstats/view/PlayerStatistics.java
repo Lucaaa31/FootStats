@@ -96,22 +96,21 @@ public class PlayerStatistics extends JPanel {
             statisticsPane.setText("<html><body>Nessun risultato trovato, controlla i filtri selezionati.</body></html>");
         } else {
             // Formatting the text using HTML for better presentation
-            StringBuilder statsHtml = new StringBuilder("<html><body style='font-family:sans-serif; padding:10px;'>");
-            statsHtml.append("<h2>Statistiche del giocatore</h2>");
-            statsHtml.append("<table style='width:100%;' border='1' cellpadding='5' cellspacing='0'>");
-            statsHtml.append("<tr><td><strong>Nome:</strong></td><td>").append(playerStats.name()).append("</td></tr>");
-            statsHtml.append("<tr><td><strong>Cognome:</strong></td><td>").append(playerStats.lastName()).append("</td></tr>");
-            statsHtml.append("<tr><td><strong>Ruolo:</strong></td><td>").append(playerStats.ruolo()).append("</td></tr>");
-            statsHtml.append("<tr><td><strong>Goal:</strong></td><td>").append(playerStats.goal()).append("</td></tr>");
-            statsHtml.append("<tr><td><strong>Assist:</strong></td><td>").append(playerStats.assist()).append("</td></tr>");
-            statsHtml.append("<tr><td><strong>Cartellini:</strong></td><td>").append(playerStats.cartellini()).append("</td></tr>");
-            statsHtml.append("<tr><td><strong>Valore di mercato:</strong></td><td>").append(playerStats.valoreDiMercato()).append("</td></tr>");
-            statsHtml.append("<tr><td><strong>Presenze:</strong></td><td>").append(playerStats.presenze()).append("</td></tr>");
-            statsHtml.append("<tr><td><strong>Numero maglia:</strong></td><td>").append(playerStats.numeroMaglia()).append("</td></tr>");
-            statsHtml.append("</table>");
-            statsHtml.append("</body></html>");
+            String statsHtml = "<html><body style='font-family:sans-serif; padding:10px;'>" + "<h2>Statistiche del giocatore</h2>" +
+                    "<table style='width:100%;' border='3' cellpadding='5' cellspacing='0'>" +
+                    "<tr><td><strong>Nome:</strong></td><td>" + playerStats.name() + "</td></tr>" +
+                    "<tr><td><strong>Cognome:</strong></td><td>" + playerStats.lastName() + "</td></tr>" +
+                    "<tr><td><strong>Ruolo:</strong></td><td>" + playerStats.ruolo() + "</td></tr>" +
+                    "<tr><td><strong>Goal:</strong></td><td>" + playerStats.goal() + "</td></tr>" +
+                    "<tr><td><strong>Assist:</strong></td><td>" + playerStats.assist() + "</td></tr>" +
+                    "<tr><td><strong>Cartellini:</strong></td><td>" + playerStats.cartellini() + "</td></tr>" +
+                    "<tr><td><strong>Valore di mercato:</strong></td><td>" + playerStats.valoreDiMercato() + "</td></tr>" +
+                    "<tr><td><strong>Presenze:</strong></td><td>" + playerStats.presenze() + "</td></tr>" +
+                    "<tr><td><strong>Numero maglia:</strong></td><td>" + playerStats.numeroMaglia() + "</td></tr>" +
+                    "</table>" +
+                    "</body></html>";
 
-            statisticsPane.setText(statsHtml.toString());
+            statisticsPane.setText(statsHtml);
         }
     }
 }

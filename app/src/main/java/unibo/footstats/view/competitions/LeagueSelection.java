@@ -1,4 +1,4 @@
-package unibo.footstats.view;
+package unibo.footstats.view.competitions;
 
 import unibo.footstats.controller.Controller;
 import unibo.footstats.utility.Context;
@@ -6,48 +6,32 @@ import unibo.footstats.utility.Context;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class CompetitionSelection extends JPanel {
-
-    private JComboBox<String> comboBox;
-    private JButton backButton;
+public class LeagueSelection extends JPanel {
     private JPanel logoPanel;
+    private Controller controller;
 
-    public CompetitionSelection(final Controller controller) {
+    public LeagueSelection(final Controller controller) {
+        this.controller = controller;
         setLayout(new BorderLayout());
 
-        // Initialize the combo box
         String[] options = controller.getSeasons().toArray(new String[0]);
         options[0] = "Seleziona una stagione";
-        comboBox = new JComboBox<>(options);
-        add(comboBox, BorderLayout.NORTH);
 
-        // Initialize the logo panel
         logoPanel = new JPanel();
         logoPanel.setLayout(new GridLayout(2, 4, 10, 10)); // Adjust the grid size based on the number of logos
         add(logoPanel, BorderLayout.CENTER);
 
-        // Load and add the logos
-        addLogo("Serie_A");
+        addLogo("Serie A");
         addLogo("PL");
         addLogo("Liga");
         addLogo("Ligue1");
         addLogo("Bundesliga");
+        addLogo("Champions");
 
-        // Initialize the back button
-        backButton = new JButton("Indietro");
-        backButton.addActionListener(e -> {
-            controller.setContext(Context.HOME_PAGE);
-            CompetitionSelection.super.setVisible(false);
-        });
 
-        JPanel bottomPanel = new JPanel(new BorderLayout());
-        bottomPanel.add(backButton, BorderLayout.WEST);
-        add(bottomPanel, BorderLayout.SOUTH);
     }
 
     private void addLogo(final String imagePath) {
@@ -71,7 +55,9 @@ public class CompetitionSelection extends JPanel {
             }
 
             public void mouseClicked(MouseEvent evt) {
-                // TODO: CONTROLLO SULLA SELEZIONE DELLA STAGIONE
+                controller.setCurrentCompetition(imagePath);
+                controller.setContext(Context.RANKING);
+                LeagueSelection.super.setVisible(false);
             }
         });
     }

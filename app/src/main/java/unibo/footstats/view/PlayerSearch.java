@@ -23,7 +23,6 @@ public class PlayerSearch extends JPanel {
     public PlayerSearch(final Controller controller) {
         setLayout(new BorderLayout());
 
-        // Pannello superiore per il campo di ricerca
         JPanel searchPanel = new JPanel();
         searchField = new JTextField(20);
         JButton searchButton = new JButton("Cerca");
@@ -31,9 +30,8 @@ public class PlayerSearch extends JPanel {
         searchPanel.add(searchButton);
         add(searchPanel, BorderLayout.NORTH);
 
-        // Pannello inferiore per la tabella dei risultati
         String[] columnNames = {"Nome", "Cognome", "Ruolo", "Squadra", "Nazionalita'", "Valore di mercato"};
-        Object[][] data = {}; // Inizialmente la tabella è vuota
+        Object[][] data = {};
 
         // Override the DefaultTableModel to make cells non-editable
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {

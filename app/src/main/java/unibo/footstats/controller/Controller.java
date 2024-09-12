@@ -18,6 +18,7 @@ public class Controller {
     private Account admin;
     private Context context = Context.LOGIN;
     private String currentCF;
+    private String currentCompetition;
 
 
 
@@ -35,6 +36,11 @@ public class Controller {
             loggedAccount = AccountType.USER;
             user = footStatsDAO.getAccount(username);
         }
+    }
+
+    public String[][] getRanking(final String season) {
+
+        return footStatsDAO.getRanking(currentCompetition, season);
     }
 
     public void logout() {
@@ -88,6 +94,11 @@ public class Controller {
         return footStatsDAO.getRequestsStatus(user.getUsername());
     }
 
+    public void setCurrentCompetition(String currentCompetition) {
+        this.currentCompetition = currentCompetition;
+    }
 
-
+    public void deleteRequest(final String request) {
+        footStatsDAO.deleteRequest(request);
+    }
 }

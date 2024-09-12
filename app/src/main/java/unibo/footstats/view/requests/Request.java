@@ -1,11 +1,10 @@
-package unibo.footstats.view;
+package unibo.footstats.view.requests;
 
 import unibo.footstats.controller.Controller;
 import unibo.footstats.utility.Context;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -92,7 +91,7 @@ public class Request extends JPanel {
         topPanel.add(topRightPanel, BorderLayout.EAST);
 
         // Create the table to display the status of previous requests
-        String[] columnNames = {"Descrizione", "Tipo di Richiesta", "Stato"};
+        String[] columnNames = {"CodiceRichiesta", "Descrizione", "Tipo di Richiesta", "Stato"};
         DefaultTableModel tableModel = new NonEditableTableModel(columnNames, 0);
         requestTable = new JTable(tableModel);
         JScrollPane tableScrollPane = new JScrollPane(requestTable);
@@ -114,21 +113,40 @@ public class Request extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH); // Add all buttons to the south
 
 
+
+        requestTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = requestTable.rowAtPoint(evt.getPoint());
+                int col = requestTable.columnAtPoint(evt.getPoint());
+                if (row >= 0 && col >= 0) {
+                    String requestID = (String) requestTable.getValueAt(row, 0);
+                    String requestStatus = (String) requestTable.getValueAt(row, 3);
+
+                    int dialogResult = JOptionPane.showConfirmDialog(null, "Vuoi eliminare la richiesta?", "Attenzione", JOptionPane.YES_NO_OPTION);
+                    if (dialogResult == JOptionPane.YES_OPTION) {
+                        controller.deleteRequest(requestID);
+                        updateRequestTable();
+                    }
+
+                }
+            }
+        });
     }
 
-    private void updateRequestTable() {
-        // Fetch the request data from the controller and update the table
+    public void updateRequestTable() {
         String[][] data = controller.getRequestsStatus();
         DefaultTableModel tableModel = (DefaultTableModel) requestTable.getModel();
         tableModel.setRowCount(0); // Clear existing data
         for (String[] row : data) {
             tableModel.addRow(row);
         }
+
     }
 
 
     // Custom TableModel to make cells non-editable
-    private class NonEditableTableModel extends DefaultTableModel {
+    private static class NonEditableTableModel extends DefaultTableModel {
         public NonEditableTableModel(String[] columnNames, int rowCount) {
             super(columnNames, rowCount);
         }
